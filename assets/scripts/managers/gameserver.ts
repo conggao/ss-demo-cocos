@@ -1,16 +1,18 @@
 import compareVersion from '../libs/compareVersion';
-import config from './config';
-import databus from './databus.js'
+import config from '../config/config';
+import databus from './databus'
+import 'minigame-api-typings'
 import {
     showTip,
 } from '../common/util';
+import { EventTrans } from '../events/EventTrans';
 
-class GameServer {
-    server = wx.getGameServerManager();
-    event = new PIXI.utils.EventEmitter();
+export class GameServer {
+    server: any;
+    event = EventTrans.instance;
 
     // 检测当前版本
-    isVersionLow = compareVersion(wx.getSystemInfoSync().SDKVersion, '2.14.4') < 0;
+    isVersionLow = compareVersion(wx.getAppBaseInfo().SDKVersion, '2.14.4') < 0;
 
     // 用于存房间信息
     roomInfo = {};
@@ -20,7 +22,7 @@ class GameServer {
     // 帧同步帧率
     fps = 30;
     // 逻辑帧的时间间隔
-    frameInterval = parseInt(1000 / this.fps);
+    frameInterval: number;
     // 为了防止网络抖动设置的帧缓冲数，类似于放视频
     frameJitLenght = 2;
 
@@ -34,9 +36,52 @@ class GameServer {
     reconnectSuccess = 0;
     // 重连失败次数
     reconnectFail = 0;
-
-
+    // 微信匹配房间回调处理
+    onBroadcastHandler: WechatMinigame.OnBroadcastCallback;
+    onSyncFrameHandler: WechatMinigame.OnSyncFrameCallback;
+    onRoomInfoChangeHandler: WechatMinigame.OnRoomInfoChangeCallback;
+    onGameStartHandler: WechatMinigame.OnGameStartCallback;
+    onGameEndHandler: WechatMinigame.OnGameEndCallback;
+    onMatchHandler: WechatMinigame.OnMatchCallback;
+    accessInfo: any;
+    // 用于标记帧同步房间是否真正开始，如果没有开始，不能发送指令，玩家不能操作
+    frameStart: any;
+    startTime: number;
+    currFrameIndex: number;
+    // 本地缓冲帧队列
+    frames: WechatMinigame.OnSyncFrameListenerResult[];
+    debugTime: number;
+    statCount: any;
+    svrFrameIndex: any;
+    avgDelay: any;
+    delay: number;
+    hasSetStart: boolean;
+    isDisconnect = false;
     isConnected = true;
+    isLogout = true;
+
+    reset() {
+        if (wx) {
+            this.server = wx.getGameServerManager()
+        }
+        this.frameInterval = Math.floor(1000 / this.fps)
+        this.frames = [];
+        this.frameStart = false;
+        // 游戏开始的时间
+        this.startTime = new Date().getTime();
+        // 当前游戏运行的帧位
+        this.currFrameIndex = 0;
+        // 当前收到的最新帧帧号
+        this.svrFrameIndex = 0;
+        this.hasSetStart = false;
+        this.statCount = 0;
+        this.avgDelay = 0;
+        this.delay = 0;
+
+        this.isDisconnect = false;
+        this.isLogout = false;
+    }
+
     constructor() {
         if (!wx.getGameServerManager) {
             showTip('当前微信版本不支持帧同步框架');
@@ -76,7 +121,9 @@ class GameServer {
             if (this.isLogout && this.isDisconnect) {
                 this.server.login().then(res => {
                     console.log('networkType change or onShow -> login', res)
-                    this.server.reconnect().then(res => {
+                    this.server.reconnect({
+                        accessInfo: ''
+                    }).then(res => {
                         console.log('networkType change or onShow -> reconnect', res)
                         ++this.reconnectSuccess;
                         wx.showToast({
@@ -85,7 +132,7 @@ class GameServer {
                             duration: 2000
                         });
                     });
-                }).catch(e => ++reconnectFail);
+                }).catch(e => ++this.reconnectFail);
             } else {
                 // 否则只需要处理对应的掉线事件
                 if (this.isLogout) {
@@ -93,7 +140,9 @@ class GameServer {
                 }
 
                 if (this.isDisconnect) {
-                    this.server.reconnect().then(res => {
+                    this.server.reconnect({
+                        accessInfo: ''
+                    }).then(res => {
                         ++this.reconnectSuccess;
                         console.log('networkType change or onShow -> reconnect', res)
                         wx.showToast({
@@ -101,7 +150,7 @@ class GameServer {
                             icon: 'none',
                             duration: 2000
                         })
-                    }).catch(e => ++reconnectFail);
+                    }).catch(e => ++this.reconnectFail);
                 }
             }
         };
@@ -125,17 +174,19 @@ class GameServer {
             this.isLogout = true;
         });
 
-        this.server.onDisconnect((res) => {
+        this.server.onDisconnect((res: WechatMinigame.GameServerManagerOnDisconnectListenerResult) => {
             console.log('onDisconnect', res);
             this.isDisconnect = true;
-            res.type !== "game" && wx.showToast({
+            res.res.type !== "game" && wx.showToast({
                 title: "游戏已掉线...",
                 icon: "none",
                 duration: 2e3
             });
-            res.type === "game" && function (that) {
+            res.res.type === "game" && function (that) {
                 function relink() {
-                    that.server.reconnect().then(function (res) {
+                    that.server.reconnect({
+                        accessInfo: ''
+                    }).then(function (res) {
                         console.log("networkType change or onShow -> reconnect", res);
                         ++that.reconnectSuccess;
                     }).catch(relink);
@@ -156,27 +207,6 @@ class GameServer {
         this.server.offGameStart(this.onGameStartHandler);
         this.server.offGameEnd(this.onGameEndHandler);
         this.server.offMatch(this.onMatchHandler);
-    }
-
-    reset() {
-        // 本地缓冲帧队列
-        this.frames = [];
-        // 用于标记帧同步房间是否真正开始，如果没有开始，不能发送指令，玩家不能操作
-        this.frameStart = false;
-        // 游戏开始的时间
-        this.startTime = new Date();
-        // 当前游戏运行的帧位
-        this.currFrameIndex = 0;
-        // 当前收到的最新帧帧号
-        this.svrFrameIndex = 0;
-        this.hasSetStart = false;
-
-        this.statCount = 0;
-        this.avgDelay = 0;
-        this.delay = 0;
-
-        this.isDisconnect = false;
-        this.isLogout = false;
     }
 
     onBroadcast() {
@@ -234,10 +264,10 @@ class GameServer {
                 })
             ]);
 
-            let time = new Date() - this.startTime;
+            let time = new Date().getTime() - this.startTime;
 
             databus.debugMsg = [
-                `游戏时间: ${parseInt(time / 1000) + 's'}`,
+                `游戏时间: ${time / 1000 + 's'}`,
                 `期望帧数: ${Math.floor(time / this.frameInterval)}帧`,
                 `实收帧数: ${this.svrFrameIndex}帧`,
                 `指令延迟: ${this.avgDelay.toFixed(1) + '(' + this.delay + ')'}ms`,
@@ -267,7 +297,7 @@ class GameServer {
         this.event.emit('backHome');
     }
 
-    onSyncFrame(res) {
+    onSyncFrame(res: WechatMinigame.OnSyncFrameListenerResult) {
         if (res.frameId % 300 === 0) {
             console.log('heart');
         }
@@ -279,7 +309,7 @@ class GameServer {
                 let obj = JSON.parse(oneFrame);
 
                 if (obj.e === config.msg.STAT && obj.id === databus.selfClientId) {
-                    this.delay = new Date() - obj.t;
+                    this.delay = new Date().getTime() - obj.t;
                     this.avgDelay = ((this.avgDelay * (obj.c - 1)) + this.delay) / obj.c;
                 }
             });
@@ -291,13 +321,13 @@ class GameServer {
 
         if (!this.hasSetStart) {
             console.log('get first frame');
-            this.startTime = new Date() - this.frameInterval;
+            this.startTime = new Date().getTime() - this.frameInterval;
             this.hasSetStart = true;
         }
 
         if (this.reconnecting && res.frameId >= this.reconnectMaxFrameId) {
             this.reconnecting = false;
-            this.startTime = new Date() - this.frameInterval * this.reconnectMaxFrameId;
+            this.startTime = new Date().getTime() - this.frameInterval * this.reconnectMaxFrameId;
             wx.hideLoading();
         }
     }
@@ -326,13 +356,13 @@ class GameServer {
 
                                 this.server.reconnect({
                                     accessInfo: res.data.accessInfo
-                                }).then(connectRes => {
+                                }).then((connectRes: WechatMinigame.ReconnectSuccessRes) => {
                                     console.log('未结束的游戏断线重连结果', connectRes);
-                                    this.reconnectMaxFrameId = connectRes.maxFrameId || 0;
+                                    this.reconnectMaxFrameId = connectRes.object.data.maxFrameId[0] || 0;
                                     this.reconnecting = true;
 
                                     // 手动调用onGameStart模拟正常开局
-                                    this.onGameStart('人工');
+                                    this.onGameStart();
                                 }).catch((e) => {
                                     console.log(e);
                                     wx.showToast({
@@ -349,11 +379,16 @@ class GameServer {
         });
     }
 
-    createRoom(options = {}, callback) {
+    /**
+     * 创建对局房间
+     * @param options 
+     * @param callback 
+     */
+    createRoom(options, callback) {
         this.server.createRoom({
             maxMemberNum: options.maxMemberNum || 2,
             startPercent: options.startPercent || 0,
-            needUserInfo: true,
+            needUserInfo: 'true',
         }).then(res => {
             const data = res.data || {};
             databus.currAccessInfo = this.accessInfo = data.accessInfo || '';
@@ -364,11 +399,14 @@ class GameServer {
         });
     }
 
+    /**
+     * 快速匹配
+     */
     createMatchRoom() {
         let { avatarUrl, nickName } = databus.userInfo;
 
         this.server.startMatch({
-            match_id: "CuQJHh6u_WqqGQ1UEzMhnfeIIgqdgCAqw12FNbl6l3E",
+            matchId: "CuQJHh6u_WqqGQ1UEzMhnfeIIgqdgCAqw12FNbl6l3E",
         });
 
         databus.matchPattern = true;
@@ -450,7 +488,7 @@ class GameServer {
         }
 
         // 本地从游戏开始到现在的运行时间
-        const nowFrameTick = new Date() - this.startTime;
+        const nowFrameTick = new Date().getTime() - this.startTime;
         const preFrameTick = this.currFrameIndex * this.frameInterval;
 
         let currTimeDelta = nowFrameTick - preFrameTick;
@@ -513,6 +551,4 @@ class GameServer {
         });
     }
 }
-
-export default new GameServer();
 

@@ -1,3 +1,8 @@
 {
-  "disable-packages": {}
+  "disable-packages": {
+    "E:\\cocos\\ss-demo\\extensions\\Colyseus Multiplayer SDK": {
+      "name": "Colyseus Multiplayer SDK",
+      "time": 1728825431431
+    }
+  }
 }

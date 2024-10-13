@@ -1,8 +1,9 @@
+import 'minigame-api-typings'
 /**
  * 全局状态管理器
  */
 class DataBus {
-    userInfo = {};
+    userInfo = { avatarUrl: '', nickName: '' };
     gameover: boolean;
     currAccessInfo: string;
     playerMap;
@@ -12,6 +13,7 @@ class DataBus {
     selfMemberInfo
     debugMsg
     matchPattern
+    gameInstance: any;
     constructor() {
         this.reset();
     }

@@ -1,12 +1,18 @@
-import { _decorator, Component, log, Node, sys } from 'cc';
+import { _decorator, director, Component, log, Node, sys } from 'cc';
 const { ccclass, property } = _decorator;
-import Colyseus from 'db://colyseus-sdk/colyseus.js';
 import 'minigame-api-typings'
+import { EventTrans } from '../events/EventTrans';
+import databus from './databus';
+import { GameServer } from './gameserver';
 @ccclass('GameManager')
 export class GameManager extends Component {
+	gameServer: GameServer;
 	start() {
+		console.log('小游戏运行平台', sys.platform);
 		switch (sys.platform) {
 			case sys.Platform.WECHAT_GAME:
+				console.log('游戏运行在微信小游戏平台上');
+				this.gameServer = new GameServer()
 				wx.cloud.init();
 				//微信登录
 				this.wxLogin();
@@ -18,83 +24,16 @@ export class GameManager extends Component {
 				console.log('游戏不是运行在小游戏平台上');
 		}
 		// this.singin();
+		// 游戏开始，跳转到游戏页面
+		EventTrans.instance.on('onGameStart', () => {
+			// director.loadScene('game')
+			this.runScene('game')
+		})
 	}
-	//调用微信接口
-	// wxLogin() {
-	// 	let sysInfo = wx.getSystemInfoSync();
-	// 	// 获取微信界面大小
-	// 	let screenWidth = sysInfo.screenWidth;
-	// 	let screenHeight = sysInfo.screenHeight;
-	// 	let self = this
-	// 	wx.login(
-	// 		{
-	// 			success: (res) => {
-	// 				if (res.code) {
-	// 					let code = res.code;
-	// 					console.log("登陆成功,获取到code:", code)
-	// 					wx.request({
-	// 						url: "https://express-nhqd-124293-8-1330282868.sh.run.tcloudbase.com/api/login",
-	// 						data: {
-	// 							"code": code
-	// 						},
-	// 						success(res) {
-	// 							//res.data 就是返回的json 字符串解解析后的数据 res.data.account.sdkId
-	// 							console.log("login result:" + res.data)
-	// 							//let loginResult = JSON.parse(res);
-	// 							// loginResult.get
-	// 						}
-	// 					});
-	// 				}
-	// 				var button = wx.createUserInfoButton(
-	// 					{
-	// 						type: 'text',
-	// 						text: '',
-	// 						style: {
-	// 							left: 0,
-	// 							top: 0,
-	// 							width: screenWidth,
-	// 							height: screenHeight,
-	// 							lineHeight: 40,
-	// 							backgroundColor: '#00000000',
-	// 							color: '#ffffff',
-	// 							textAlign: 'center'
-	// 						}
-	// 					})
-	// 				button.onTap((res) => {
-	// 					if (res.errMsg == "getUserInfo:ok") {
-	// 						console.log("授权用户信息")
-	// 						//获取到用户信息
-	// 						// let userInfo = res.userInfo
-	// 						// self.wxLogin(userInfo);
-	// 						wx.getUserInfo({
-	// 							lang: "zh_CN",
-	// 							success: function (res) {
-	// 								let userInfo = res.userInfo
-	// 								let avatarUrl = userInfo.avatarUrl
-	// 								assetManager.loadRemote(avatarUrl, { ext: '.png' }, (err, spriteFrame) => {
-	// 									if (err) {
-	// 										return;
-	// 									}
-	// 									DownloadResource.avartarSpriteFrame = SpriteFrame.createWithImage(spriteFrame as ImageAsset);
-	// 								});
-	// 								console.log(userInfo)
-	// 							},
-	// 							fail: function () {
-	// 								console.log("获取失败");
-	// 								return false;
-	// 							}
-	// 						})
-	// 						//清除微信授权按钮
-	// 						button.destroy()
-	// 					}
-	// 					else {
-	// 						console.log("授权失败")
-	// 					}
-	// 				})
-	// 			}
-	// 		})
-	// }
 	wxLogin() {
+		console.log('开始微信登陆');
+
+		// 获取openId
 		wx.cloud.callContainer({
 			"config": {
 				"env": "prod-6g7pcu8aa3559172"
@@ -107,24 +46,52 @@ export class GameManager extends Component {
 			"method": "GET",
 			"data": ""
 		}).then(res => {
-			console.log(res);
+			console.log('用户openId', res);
+			wx.getSetting({
+				withSubscriptions: true,
+				success(res) {
+					console.log('微信设置', res);
+
+					if (res.authSetting['scope.userInfo']) {
+						// 已经授权，可以直接调用 getUserInfo 获取头像昵称
+						wx.getUserInfo({
+							success: function (res) {
+								console.log('用户信息', res.userInfo)
+								databus.userInfo = {
+									avatarUrl: res.userInfo.avatarUrl,
+									nickName: res.userInfo.nickName
+								}
+							}
+						})
+
+					}
+				}
+			})
+			// 加入房间
+			this.joinToRoom()
 		})
 	}
-	// singin() {
-	// 	// Finally join the room by consuming the seat reservation
-	// 	this.consumeSeatReservation(requestResponse.output.seatReservation.room, requestResponse.output.seatReservation.sessionId);
-	// }
-	// public async consumeSeatReservation(room: Colyseus.RoomAvailable, sessionId: string) {
-	// 	try {
-	// 		this.Room = await this._client.consumeSeatReservation<RoomState>({ room, sessionId });
-	// 		this.onRoomChanged.invoke(this.Room);
-	// 		this._currentRoomState = this.Room.state;
-	// 		this.joinChatRoom();
-	// 		this.registerHandlers();
-	// 	} catch (error) {
-	// 		console.error(`Error attempting to consume seat reservation - ${error}`);
-	// 	}
-	// }
+
+	joinToRoom() {
+		wx.showLoading({ title: '加入房间中' });
+		this.gameServer.joinRoom(databus.currAccessInfo).then(res => {
+			wx.hideLoading();
+			let data = res.data || {};
+
+			databus.selfClientId = data.clientId;
+			this.gameServer.accessInfo = databus.currAccessInfo;
+			// this.runScene(Room);
+			console.log('join', data);
+		}).catch(e => {
+			console.log(e);
+		});
+	}
+	runScene(sceneName: string) {
+		director.loadScene(sceneName)
+	}
+	launch(gameServer) {
+		this.gameServer = gameServer;
+	}
 	update(deltaTime: number) {
 	}
 }

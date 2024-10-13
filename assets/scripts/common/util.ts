@@ -1,16 +1,26 @@
+import 'minigame-api-typings'
 /**
  * 获取当前设备信息
  */
-export function getDeviceInfo() {
-    let info = {};
+interface DeviceInfo {
+    devicePixelRatio: number
+    windowWidth: number
+    windowHeight: number
+}
+export function getDeviceInfo(): DeviceInfo {
     let defaultInfo = {
         devicePixelRatio: 2,
-        windowWidth: 375, windowHeight: 667
+        windowWidth: 375,
+        windowHeight: 667
     }
+    let info = defaultInfo
 
     if (typeof wx !== 'undefined') {
         try {
-            info = wx.getSystemSetting();
+            const windowInfo = wx.getWindowInfo();
+            info.devicePixelRatio = windowInfo.pixelRatio
+            info.windowHeight = windowInfo.windowHeight
+            info.windowWidth = windowInfo.windowWidth
         } catch (e) {
             info = defaultInfo
         }

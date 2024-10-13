@@ -4,12 +4,19 @@
     "common": {
       "buildPath": "project://build",
       "outputName": "wechatgame",
-      "mainBundleCompressionType": "merge_dep",
-      "platform": "wechatgame"
+      "mainBundleCompressionType": "subpackage",
+      "platform": "wechatgame",
+      "buildMode": "normal",
+      "mainBundleIsRemote": false,
+      "useBuiltinServer": false,
+      "startSceneAssetBundle": true,
+      "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
+      "sourceMaps": true,
+      "debug": true
     },
     "options": {
       "wechatgame": {
-        "orientation": "portrait",
+        "orientation": "landscapeRight",
         "appid": "wx602b82e76be49bb9",
         "buildOpenDataContextTemplate": "",
         "separateEngine": false,
@@ -19,7 +26,7 @@
     },
     "taskOptionsMap": {
       "1728477239076": {
-        "orientation": "portrait",
+        "orientation": "landscapeRight",
         "appid": "wx602b82e76be49bb9",
         "buildOpenDataContextTemplate": "",
         "separateEngine": false,

@@ -1,10 +1,10 @@
-import { _decorator, Collider2D, Vec3, Component, RigidBody2D, math, v3, CCFloat, ICollisionEvent, Vec2, v2, Contact2DType, IPhysics2DContact, Node, Animation, AnimationState } from 'cc';
+import { _decorator, Collider2D, Component, RigidBody2D, CCFloat, Vec2, v2, Contact2DType, IPhysics2DContact, Node, Animation } from 'cc';
 import { Events } from '../events/Events';
 import { PhysicsGroup } from './PhysicsGroup';
 import { StateDefine } from './StateDefine';
 const { ccclass, property } = _decorator;
 import doorConfig from '../config/SceneConfig'
-import { Door } from './Door';
+import { EventTrans } from '../events/EventTrans';
 
 let tempVelocity: Vec2 = v2();
 
@@ -34,7 +34,7 @@ export class Actor extends Component {
 
 
     start() {
-        Door.instance.on("DoorOpenEvent", this.onDoorOpen, this)
+        EventTrans.instance.on("DoorOpenEvent", this.onDoorOpen, this)
         this.rigidbody = this.node.getComponent(RigidBody2D);
         this.collider = this.node.getComponent(Collider2D);
         console.log(this.collider);

@@ -1,11 +1,11 @@
-import { PhysicsSystem, _decorator } from 'cc';
+import { _decorator } from 'cc';
 
 /**
  * 物理分组定义
  */
 export class PhysicsGroup {
 
-    static readonly Default = PhysicsSystem.PhysicsGroup.DEFAULT;
+    static readonly Default = 1;
 
     static readonly Player = 1 << 1;
 
