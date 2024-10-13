@@ -1,0 +1,30 @@
+{
+  "__version__": "3.0.7",
+  "builder": {
+    "options": {
+      "web-desktop": {
+        "configID": "1b0685",
+        "services": []
+      },
+      "fb-instant-games": {
+        "configID": "1b0685",
+        "services": []
+      },
+      "wechatgame": {
+        "configID": "1b0685",
+        "services": []
+      }
+    },
+    "taskOptionsMap": {
+      "1728477239076": {
+        "configID": "1b0685",
+        "services": []
+      }
+    },
+    "__version__": "1.3.8"
+  },
+  "builder-options": {
+    "configID": "1b0685",
+    "services": []
+  }
+}

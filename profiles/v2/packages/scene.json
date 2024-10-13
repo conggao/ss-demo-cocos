@@ -1,0 +1,705 @@
+{
+  "__version__": "1.0.0",
+  "builder": {
+    "taskOptionsMap": {},
+    "__version__": "1.3.8"
+  },
+  "gizmos-infos": {
+    "is2D": true,
+    "is3DIcon": false,
+    "iconSize": 2,
+    "gridVisible": true,
+    "gridColor": [
+      166,
+      166,
+      166,
+      255
+    ],
+    "transformToolName": "position",
+    "pivot": "pivot",
+    "coordinate": "local",
+    "toolsVisibility3d": true
+  },
+  "snap-configs": {
+    "position": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": 1,
+    "scale": 1,
+    "isPositionSnapEnabled": false,
+    "isRotationSnapEnabled": false,
+    "isScaleSnapEnabled": false
+  },
+  "rect-snap-configs": {
+    "enableSnapping": true,
+    "snapThreshold": 4
+  },
+  "float-window": {
+    "position": {
+      "cc": {
+        "Camera": {
+          "dock": false,
+          "top": null,
+          "bottom": 10,
+          "left": null,
+          "right": 10
+        }
+      }
+    }
+  },
+  "camera-infos": {
+    "e4a3b9e2-71d7-464f-a5ac-44dde5af3479": {
+      "position": {
+        "x": 912.3133333333333,
+        "y": 609.5616666666666,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 1125,
+        "y": 750,
+        "width": 1575,
+        "height": 1050
+      },
+      "scale": 0.7
+    },
+    "75646873-35e0-45d5-989d-bc4f0f29e04d": {
+      "position": {
+        "x": 489.51666666666665,
+        "y": 276.76666666666665,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "3257c56f-3eaf-4d64-b2d9-5c124e5cbc3d": {
+      "position": {
+        "x": 492.70916666666665,
+        "y": 278.57166666666666,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "faf81089-b27f-45bd-8207-e5c7f079f882": {
+      "position": {
+        "x": 425.66666666666663,
+        "y": 240.66666666666666,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "40db8362-92b8-4532-ad93-88d186a96789": {
+      "position": {
+        "x": 508.6716666666666,
+        "y": 287.59666666666664,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "38e9f41c-3f27-4a5d-aa79-7440d8dc1bb5": {
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": -157.5,
+        "y": -78.75,
+        "width": 0,
+        "height": 0
+      },
+      "scale": 1
+    },
+    "5b97778d-a44d-4ee1-9292-79281ad4b989": {
+      "position": {
+        "x": 822.3933333333333,
+        "y": 549.4816666666666,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 1125,
+        "y": 750,
+        "width": 1575,
+        "height": 1050
+      },
+      "scale": 0.7
+    },
+    "6c4f5e15-0c03-485b-9d06-6aa35f8abccf": {
+      "position": {
+        "x": 495.90166666666664,
+        "y": 280.37666666666667,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "8e988fb8-839f-4a21-9819-c58144b86e3d": {
+      "position": {
+        "x": 489.51666666666665,
+        "y": 276.76666666666665,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "7d24b48b-79e2-4e78-a9a5-f285849dedab": {
+      "position": {
+        "x": 435.2441666666666,
+        "y": 246.08166666666665,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "c9852e2d-0e24-4d0e-a3fc-8d4226a2a4d3": {
+      "position": {
+        "x": 463.97666666666663,
+        "y": 262.32666666666665,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "f64ab178-adfa-4f17-8949-2a5d90a9e102": {
+      "position": {
+        "x": 448.01416666666665,
+        "y": 253.30166666666668,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "e81d6d86-5bf6-478b-bf79-c7e79f6ad134": {
+      "position": {
+        "x": 460.78416666666664,
+        "y": 260.52166666666665,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "9bc742e9-cd3a-4ce7-90dc-55575bf0b8fd": {
+      "position": {
+        "x": 457.59166666666664,
+        "y": 258.71666666666664,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "f7dd7fd4-f2dd-4c6b-9b86-427a9ced879d": {
+      "position": {
+        "x": 444.82166666666666,
+        "y": 251.49666666666667,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "5862e8a0-1446-4b4f-8280-e26948731e87": {
+      "position": {
+        "x": 479.93916666666667,
+        "y": 271.3516666666667,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "82b70e61-52db-46ef-8514-e03c63c38317": {
+      "position": {
+        "x": 448.01416666666665,
+        "y": 253.30166666666668,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "916d2a2c-8a03-454d-a846-558b9306cf07": {
+      "position": {
+        "x": 467.1691666666667,
+        "y": 264.13166666666666,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "ffad6a58-5c68-4f63-97c0-d85175c27d3b": {
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": -670.95,
+        "y": -471.45,
+        "width": 0,
+        "height": 0
+      },
+      "scale": 1
+    },
+    "7da120e1-61dd-4724-816f-2554aca0e625": {
+      "position": {
+        "x": 483.13166666666666,
+        "y": 273.15666666666664,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 639.5,
+        "y": 360,
+        "width": 895.3,
+        "height": 504
+      },
+      "scale": 0.7
+    },
+    "6c328253-4607-4ee9-bfec-f92b32606cc9": {
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "scale": 1
+    },
+    "420f4544-63f8-40dd-af65-d71e844fd2b0": {
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": -670.95,
+        "y": -455.7,
+        "width": 0,
+        "height": 0
+      },
+      "scale": 1
+    },
+    "8a4730c9-2289-44db-9484-56e21dc7ff6c": {
+      "position": {
+        "x": 958.4999999999999,
+        "y": 673.4999999999999,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 1.6240976817373716e-13,
+        "y": 34.499999999999964,
+        "width": 1341.9,
+        "height": 942.9
+      },
+      "scale": 0.7000000000000001
+    },
+    "c1e1708f-9256-4e72-8d33-d44e0e4022aa": {
+      "position": {
+        "x": 614.0998786782473,
+        "y": 351.21661767515945,
+        "z": 5000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "viewCenter": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "contentRect": {
+        "x": 59.237430598209045,
+        "y": 56.588746457974025,
+        "width": 1341.8999999999999,
+        "height": 894.6
+      },
+      "scale": 1.4552255298479424
+    }
+  },
+  "camera-uuids": [
+    "e4a3b9e2-71d7-464f-a5ac-44dde5af3479",
+    "75646873-35e0-45d5-989d-bc4f0f29e04d",
+    "3257c56f-3eaf-4d64-b2d9-5c124e5cbc3d",
+    "faf81089-b27f-45bd-8207-e5c7f079f882",
+    "40db8362-92b8-4532-ad93-88d186a96789",
+    "38e9f41c-3f27-4a5d-aa79-7440d8dc1bb5",
+    "5b97778d-a44d-4ee1-9292-79281ad4b989",
+    "6c4f5e15-0c03-485b-9d06-6aa35f8abccf",
+    "8e988fb8-839f-4a21-9819-c58144b86e3d",
+    "7d24b48b-79e2-4e78-a9a5-f285849dedab",
+    "c9852e2d-0e24-4d0e-a3fc-8d4226a2a4d3",
+    "f64ab178-adfa-4f17-8949-2a5d90a9e102",
+    "e81d6d86-5bf6-478b-bf79-c7e79f6ad134",
+    "9bc742e9-cd3a-4ce7-90dc-55575bf0b8fd",
+    "f7dd7fd4-f2dd-4c6b-9b86-427a9ced879d",
+    "5862e8a0-1446-4b4f-8280-e26948731e87",
+    "82b70e61-52db-46ef-8514-e03c63c38317",
+    "916d2a2c-8a03-454d-a846-558b9306cf07",
+    "ffad6a58-5c68-4f63-97c0-d85175c27d3b",
+    "7da120e1-61dd-4724-816f-2554aca0e625",
+    "6c328253-4607-4ee9-bfec-f92b32606cc9",
+    "420f4544-63f8-40dd-af65-d71e844fd2b0",
+    "8a4730c9-2289-44db-9484-56e21dc7ff6c",
+    "c1e1708f-9256-4e72-8d33-d44e0e4022aa"
+  ],
+  "camera": {
+    "color": [
+      48,
+      48,
+      48,
+      255
+    ],
+    "fov": 45,
+    "far": 10000,
+    "near": 0.01,
+    "wheelSpeed": 0.01,
+    "wanderSpeed": 10,
+    "enableAcceleration": true,
+    "size": "__default_design__",
+    "far2D": 10000,
+    "near2D": 1,
+    "wheelSpeed2D": 6,
+    "iso": 0,
+    "aperture": 19,
+    "shutter": 7
+  },
+  "scene_view": {
+    "isSceneLightOn": true,
+    "output_device": "__default_design__"
+  }
+}

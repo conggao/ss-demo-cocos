@@ -1,0 +1,10 @@
+{
+  "name": "ss-demo",
+  "uuid": "ba4429a9-3812-40c5-8fc5-faf44eadb657",
+  "creator": {
+    "version": "3.8.3"
+  },
+  "dependencies": {
+    "minigame-api-typings": "^3.8.7"
+  }
+}
