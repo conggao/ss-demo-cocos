@@ -6,9 +6,13 @@ import {
     showTip,
 } from '../common/util';
 import { EventTrans } from '../events/EventTrans';
-
+import { sys } from 'cc';
+/**
+ * 房间匹配、帧同步
+ */
 export class GameServer {
-    server: any;
+    // 游戏服务管理对象（提供游戏服务相关的方法）
+    server: WechatMinigame.GameServerManager;
     event = EventTrans.instance;
 
     // 检测当前版本
@@ -213,10 +217,14 @@ export class GameServer {
         this.startGame();
     }
 
-    onMatch(res) {
-        let nickname = res.groupInfoList[0].memberInfoList[0].nickName;
+    /**
+     * 匹配到之后
+     * @param res 
+     */
+    onMatch(res: WechatMinigame.GameServerManagerOnMatchListenerResult) {
+        let nickname = res.res.groupInfoList[0].memberInfoList[0].nickName;
 
-        databus.currAccessInfo = this.accessInfo = res.roomServiceAccessInfo || "";
+        databus.currAccessInfo = this.accessInfo = res.res.roomServiceAccessInfo || "";
 
         this.joinRoom(databus.currAccessInfo)
             .then((res) => {
@@ -325,8 +333,10 @@ export class GameServer {
             this.hasSetStart = true;
         }
 
+        // 如果是重连 并且 帧同步的帧号大于重连返回的最大帧号
         if (this.reconnecting && res.frameId >= this.reconnectMaxFrameId) {
             this.reconnecting = false;
+            // 游戏开始时间=当前时间-游戏打了多长时间
             this.startTime = new Date().getTime() - this.frameInterval * this.reconnectMaxFrameId;
             wx.hideLoading();
         }
@@ -337,45 +347,44 @@ export class GameServer {
         this.event.emit('onRoomInfoChange', roomInfo);
     }
 
-    login() {
-        return this.server.login().then(() => {
-            this.server.getLastRoomInfo().then((res) => {
-                // 查询到之前的游戏还没结束
-                if (res.data && res.data.roomInfo && res.data.roomInfo.roomState === config.roomState.gameStart) {
-                    console.log('查询到还有没结束的游戏', res.data);
-                    wx.showModal({
-                        title: '温馨提示',
-                        content: '查询到之前还有尚未结束的游戏，是否重连继续游戏？',
-                        success: (modalRes) => {
-                            if (modalRes.confirm) {
-                                this.onRoomInfoChange(res.data.roomInfo);
+    async login() {
+        await this.server.login();
+        this.server.getLastRoomInfo().then((res) => {
+            // 查询到之前的游戏还没结束
+            if (res.data && res.data.roomInfo && res.data.roomInfo.roomState === config.roomState.gameStart) {
+                console.log('查询到还有没结束的游戏', res.data);
+                wx.showModal({
+                    title: '温馨提示',
+                    content: '查询到之前还有尚未结束的游戏，是否重连继续游戏？',
+                    success: (modalRes_1) => {
+                        if (modalRes_1.confirm) {
+                            this.onRoomInfoChange(res.data.roomInfo);
 
-                                wx.showLoading({
-                                    title: '重连中...',
+                            wx.showLoading({
+                                title: '重连中...',
+                            });
+
+                            this.server.reconnect({
+                                accessInfo: res.data.accessInfo
+                            }).then((connectRes: WechatMinigame.ReconnectSuccessRes) => {
+                                console.log('未结束的游戏断线重连结果', connectRes);
+                                this.reconnectMaxFrameId = connectRes.object.data.maxFrameId[0] || 0;
+                                this.reconnecting = true;
+
+                                // 手动调用onGameStart模拟正常开局
+                                this.onGameStart();
+                            }).catch((e) => {
+                                console.log(e);
+                                wx.showToast({
+                                    title: '重连失败，请重新开房间',
+                                    icon: 'none',
+                                    duration: 2000
                                 });
-
-                                this.server.reconnect({
-                                    accessInfo: res.data.accessInfo
-                                }).then((connectRes: WechatMinigame.ReconnectSuccessRes) => {
-                                    console.log('未结束的游戏断线重连结果', connectRes);
-                                    this.reconnectMaxFrameId = connectRes.object.data.maxFrameId[0] || 0;
-                                    this.reconnecting = true;
-
-                                    // 手动调用onGameStart模拟正常开局
-                                    this.onGameStart();
-                                }).catch((e) => {
-                                    console.log(e);
-                                    wx.showToast({
-                                        title: '重连失败，请重新开房间',
-                                        icon: 'none',
-                                        duration: 2000
-                                    });
-                                });
-                            }
+                            });
                         }
-                    });
-                }
-            });
+                    }
+                });
+            }
         });
     }
 
@@ -388,15 +397,15 @@ export class GameServer {
         this.server.createRoom({
             maxMemberNum: options.maxMemberNum || 2,
             startPercent: options.startPercent || 0,
-            needUserInfo: 'true',
-        }).then(res => {
-            const data = res.data || {};
-            databus.currAccessInfo = this.accessInfo = data.accessInfo || '';
-            databus.selfClientId = data.clientId;
-            this.event.emit('createRoom');
-            console.log(data);
-            callback && callback();
-        });
+            success: (res) => {
+                const data = res.data;
+                databus.currAccessInfo = this.accessInfo = data.accessInfo || '';
+                databus.selfClientId = data.clientId;
+                this.event.emit('createRoom');
+                console.log('创建房间成功', data);
+                callback && callback();
+            }
+        })
     }
 
     /**
@@ -424,6 +433,11 @@ export class GameServer {
         });
     }
 
+    /**
+     * 加入房间
+     * @param accessInfo 
+     * @returns 
+     */
     joinRoom(accessInfo) {
         return this.server.joinRoom({ accessInfo });
     }
@@ -436,10 +450,18 @@ export class GameServer {
         return this.server.getRoomInfo();
     }
 
+    /**
+     * 开始帧同步
+     * @returns 
+     */
     startGame() {
         return this.server.startGame();
     }
 
+    /**
+     * 有人离开房间
+     * @param callback 
+     */
     memberLeaveRoom(callback) {
         this.server.memberLeaveRoom({
             accessInfo: this.accessInfo
@@ -543,6 +565,7 @@ export class GameServer {
         if (databus.playerList[0].hp > databus.playerList[1].hp) {
             databus.playerList[0].userData.win = true;
         } else {
+
             databus.playerList[1].userData.win = true;
         }
 
@@ -551,4 +574,14 @@ export class GameServer {
         });
     }
 }
-
+let gameServer: GameServer = null
+// 判断小游戏运行的平台
+switch (sys.platform) {
+    case sys.Platform.WECHAT_GAME:
+        console.log('游戏运行在微信小游戏平台上');
+        gameServer = new GameServer()
+        break;
+    default:
+        break;
+}
+export { gameServer }

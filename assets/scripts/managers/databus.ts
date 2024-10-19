@@ -3,6 +3,7 @@ import 'minigame-api-typings'
  * 全局状态管理器
  */
 class DataBus {
+    // 用户信息
     userInfo = { avatarUrl: '', nickName: '' };
     gameover: boolean;
     currAccessInfo: string;

@@ -4,15 +4,30 @@
     "common": {
       "buildPath": "project://build",
       "outputName": "wechatgame",
-      "mainBundleCompressionType": "subpackage",
+      "mainBundleCompressionType": "merge_dep",
       "platform": "wechatgame",
       "buildMode": "normal",
       "mainBundleIsRemote": false,
       "useBuiltinServer": false,
-      "startSceneAssetBundle": true,
-      "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
+      "startSceneAssetBundle": false,
+      "server": "",
       "sourceMaps": true,
-      "debug": true
+      "debug": true,
+      "scenes": [
+        {
+          "url": "db://assets/scene/game.scene",
+          "uuid": "c1e1708f-9256-4e72-8d33-d44e0e4022aa"
+        },
+        {
+          "url": "db://assets/scene/start.scene",
+          "uuid": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2"
+        },
+        {
+          "url": "db://assets/scene/room.scene",
+          "uuid": "e372c0e2-e2d1-4c33-8bc1-a3fd31c92ab8"
+        }
+      ],
+      "startScene": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2"
     },
     "options": {
       "wechatgame": {

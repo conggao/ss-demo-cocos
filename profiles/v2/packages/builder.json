@@ -9,14 +9,29 @@
     },
     "buildPath": "project://build",
     "outputName": "wechatgame",
-    "mainBundleCompressionType": "subpackage",
+    "mainBundleCompressionType": "merge_dep",
     "platform": "wechatgame",
     "mainBundleIsRemote": false,
     "useBuiltinServer": false,
-    "startSceneAssetBundle": true,
-    "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
+    "startSceneAssetBundle": false,
+    "server": "",
     "sourceMaps": true,
-    "debug": true
+    "debug": true,
+    "scenes": [
+      {
+        "url": "db://assets/scene/game.scene",
+        "uuid": "c1e1708f-9256-4e72-8d33-d44e0e4022aa"
+      },
+      {
+        "url": "db://assets/scene/start.scene",
+        "uuid": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2"
+      },
+      {
+        "url": "db://assets/scene/room.scene",
+        "uuid": "e372c0e2-e2d1-4c33-8bc1-a3fd31c92ab8"
+      }
+    ],
+    "startScene": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2"
   },
   "BuildTaskManager": {
     "taskMap": {
@@ -26,11 +41,11 @@
         "progress": 1,
         "state": "success",
         "stage": "build",
-        "message": "2024-10-13 23:04:07 build success in 4 s!",
-        "detailMessage": "// ---- build task wechatgame：onAfterBuild ----\r",
+        "message": "2024-10-19 17:50:19 build success in 5 s!",
+        "detailMessage": "// ---- build task cocos-service：onAfterBuild ----\r",
         "options": {
           "name": "ss-demo",
-          "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
+          "server": "",
           "platform": "wechatgame",
           "buildPath": "project://build",
           "debug": true,
@@ -52,21 +67,29 @@
             "asyncFunctions": false
           },
           "experimentalEraseModules": false,
-          "startSceneAssetBundle": true,
+          "startSceneAssetBundle": false,
           "bundleConfigs": [],
           "useBuiltinServer": false,
           "mainBundleIsRemote": false,
-          "mainBundleCompressionType": "subpackage",
+          "mainBundleCompressionType": "merge_dep",
           "useSplashScreen": true,
           "bundleCommonChunk": false,
           "packAutoAtlas": true,
-          "startScene": "c1e1708f-9256-4e72-8d33-d44e0e4022aa",
+          "startScene": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2",
           "outputName": "wechatgame",
           "taskName": "wechatgame",
           "scenes": [
             {
               "url": "db://assets/scene/game.scene",
               "uuid": "c1e1708f-9256-4e72-8d33-d44e0e4022aa"
+            },
+            {
+              "url": "db://assets/scene/start.scene",
+              "uuid": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2"
+            },
+            {
+              "url": "db://assets/scene/room.scene",
+              "uuid": "e372c0e2-e2d1-4c33-8bc1-a3fd31c92ab8"
             }
           ],
           "wasmCompressionMode": false,
@@ -75,7 +98,7 @@
           "logDest": "project://temp/builder/log/wechatgame2024-10-9 20-33.log",
           "buildMode": "normal"
         },
-        "time": "2024-10-13 23:04:02",
+        "time": "2024-10-19 17:50:13",
         "dirty": false
       }
     }
