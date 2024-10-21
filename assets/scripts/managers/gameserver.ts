@@ -7,6 +7,7 @@ import {
 } from '../common/util';
 import { EventTrans } from '../events/EventTrans';
 import { sys } from 'cc';
+import { RoomEvents } from '../events/RoomEvents';
 /**
  * 房间匹配、帧同步
  */
@@ -47,6 +48,7 @@ export class GameServer {
     onGameStartHandler: WechatMinigame.OnGameStartCallback;
     onGameEndHandler: WechatMinigame.OnGameEndCallback;
     onMatchHandler: WechatMinigame.OnMatchCallback;
+    // 房间信息
     accessInfo: any;
     // 用于标记帧同步房间是否真正开始，如果没有开始，不能发送指令，玩家不能操作
     frameStart: any;
@@ -401,7 +403,7 @@ export class GameServer {
                 const data = res.data;
                 databus.currAccessInfo = this.accessInfo = data.accessInfo || '';
                 databus.selfClientId = data.clientId;
-                this.event.emit('createRoom');
+                this.event.emit(RoomEvents.createRoom);
                 console.log('创建房间成功', data);
                 callback && callback();
             }
@@ -413,16 +415,17 @@ export class GameServer {
      */
     createMatchRoom() {
         let { avatarUrl, nickName } = databus.userInfo;
+        console.log('开始匹配对局:', nickName);
 
         this.server.startMatch({
-            matchId: "CuQJHh6u_WqqGQ1UEzMhnfeIIgqdgCAqw12FNbl6l3E",
+            matchId: "PpHeI1EFoV9dDkioXKHSamJsWctr7nfMwGtGJFJe9QE",
         });
 
         databus.matchPattern = true;
 
-        this.event.emit("createRoom");
+        this.event.emit(RoomEvents.createRoom);
 
-        this.event.emit("onRoomInfoChange", {
+        this.event.emit(RoomEvents.onRoomInfoChange, {
             memberList: [
                 { headimg: avatarUrl, nickname: nickName },
                 {

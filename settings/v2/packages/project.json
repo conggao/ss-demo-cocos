@@ -21,5 +21,11 @@
       "2": 10,
       "3": 6
     }
+  },
+  "general": {
+    "designResolution": {
+      "fitHeight": true,
+      "fitWidth": false
+    }
   }
 }

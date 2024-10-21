@@ -8,9 +8,10 @@ export const DynamicResourceDefine = {
         }
     },
 
-    ui:{
-        player:{
-            Path:"prefab/user"
+    ui: {
+        player: {
+            Path: "prefab/",
+            User: "prefab/user"
         }
 
     },

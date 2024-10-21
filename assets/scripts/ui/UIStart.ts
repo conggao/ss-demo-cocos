@@ -1,7 +1,8 @@
-import { _decorator, Component, Node, director, sys, resources, Prefab, instantiate, log } from 'cc';
+import { _decorator, Component, Node, director, sys, resources, Prefab, instantiate, log, game } from 'cc';
 import { gameServer } from '../managers/gameserver';
 import databus from '../managers/databus';
 import 'minigame-api-typings'
+import { DynamicResourceDefine } from '../resources/ResourceDefine';
 const { ccclass, property } = _decorator;
 
 
@@ -115,19 +116,19 @@ export class UIStart extends Component {
         // 判断小游戏运行的平台
         switch (sys.platform) {
             case sys.Platform.WECHAT_GAME:
-                console.log('游戏运行在微信小游戏平台上');
-                wx.showLoading({ title: '加入房间中' });
-                gameServer.joinRoom(databus.currAccessInfo).then(res => {
-                    wx.hideLoading();
-                    let data = res.data || {};
+                // wx.showLoading({ title: '加入房间中' });
+                // gameServer.joinRoom(databus.currAccessInfo).then(res => {
+                //     wx.hideLoading();
+                //     let data = res.data || {};
 
-                    databus.selfClientId = data.clientId;
-                    gameServer.accessInfo = databus.currAccessInfo;
-                    // this.runScene(Room);
-                    console.log('join', data);
-                }).catch(e => {
-                    console.log(e);
-                });
+                //     databus.selfClientId = data.clientId;
+                //     gameServer.accessInfo = databus.currAccessInfo;
+                //     // this.runScene(Room);
+                //     console.log('join', data);
+                // }).catch(e => {
+                //     console.log(e);
+                // });
+                gameServer.createMatchRoom();
                 break;
             default:
                 break

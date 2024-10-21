@@ -9,7 +9,7 @@
     },
     "buildPath": "project://build",
     "outputName": "wechatgame",
-    "mainBundleCompressionType": "merge_dep",
+    "mainBundleCompressionType": "none",
     "platform": "wechatgame",
     "mainBundleIsRemote": false,
     "useBuiltinServer": false,
@@ -41,8 +41,8 @@
         "progress": 1,
         "state": "success",
         "stage": "build",
-        "message": "2024-10-19 17:50:19 build success in 5 s!",
-        "detailMessage": "// ---- build task cocos-service：onAfterBuild ----\r",
+        "message": "2024-10-21 21:41:39 build success in 5 s!",
+        "detailMessage": "// ---- build task wechatgame：onAfterBuild ----\r",
         "options": {
           "name": "ss-demo",
           "server": "",
@@ -71,7 +71,7 @@
           "bundleConfigs": [],
           "useBuiltinServer": false,
           "mainBundleIsRemote": false,
-          "mainBundleCompressionType": "merge_dep",
+          "mainBundleCompressionType": "none",
           "useSplashScreen": true,
           "bundleCommonChunk": false,
           "packAutoAtlas": true,
@@ -98,7 +98,7 @@
           "logDest": "project://temp/builder/log/wechatgame2024-10-9 20-33.log",
           "buildMode": "normal"
         },
-        "time": "2024-10-19 17:50:13",
+        "time": "2024-10-21 21:41:34",
         "dirty": false
       }
     }
