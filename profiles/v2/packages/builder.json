@@ -41,8 +41,8 @@
         "progress": 1,
         "state": "success",
         "stage": "build",
-        "message": "2024-10-23 06:46:29 build success in 6 s!",
-        "detailMessage": "// ---- build task wechatgame：onAfterBuild ----\r",
+        "message": "2024-10-23 06:53:20 build success in 6 s!",
+        "detailMessage": "// ---- build task cocos-service：onAfterBuild ----\r",
         "options": {
           "name": "ss-demo",
           "server": "",
@@ -98,7 +98,7 @@
           "logDest": "project://temp/builder/log/wechatgame2024-10-9 20-33.log",
           "buildMode": "normal"
         },
-        "time": "2024-10-23 06:46:22",
+        "time": "2024-10-23 06:53:14",
         "dirty": false
       }
     }

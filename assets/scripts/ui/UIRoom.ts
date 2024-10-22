@@ -9,14 +9,15 @@ const { ccclass, property } = _decorator;
 
 @ccclass('UIRoom')
 export class UIRoom extends Component {
+    onRoomInfoChangeHandler
     start() {
         // this.singin();
         // 游戏开始，跳转到游戏页面
         EventTrans.instance.on('onGameStart', () => {
             SceneUtils.loadGame()
         })
-        this.onRoomInfoChange.bind(this)
-        EventTrans.instance.on(RoomEvents.onRoomInfoChange, this.onRoomInfoChange)
+        this.onRoomInfoChangeHandler = this.onRoomInfoChange.bind(this)
+        EventTrans.instance.on(RoomEvents.onRoomInfoChange, this.onRoomInfoChangeHandler)
         this.createOneUser({ headimg: databus.userInfo.avatarUrl, nickname: databus.userInfo.nickName })
     }
     // 房间队伍信息改变
@@ -26,7 +27,6 @@ export class UIRoom extends Component {
             member.index = index;
             let user = await this.createOneUser(member)
         })
-
     }
     update(deltaTime: number) {
 
