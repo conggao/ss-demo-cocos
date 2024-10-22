@@ -58,7 +58,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Canvas",
+    "_name": "StartView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -357,7 +357,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 524.723,
-      "y": 271.067,
+      "y": 97.23,
       "z": 0
     },
     "_lrot": {
@@ -579,7 +579,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "加入房间",
+    "_string": "快速开始",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 46.63708333333333,
@@ -785,7 +785,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -412.76,
-      "y": 296.112,
+      "y": 104.597,
       "z": 0
     },
     "_lrot": {

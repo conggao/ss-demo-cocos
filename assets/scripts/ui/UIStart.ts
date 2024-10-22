@@ -1,8 +1,11 @@
-import { _decorator, Component, Node, director, sys, resources, Prefab, instantiate, log, game } from 'cc';
+import { _decorator, Component, Node, director, sys, resources, Prefab, instantiate, log, game, EventTarget } from 'cc';
 import { gameServer } from '../managers/gameserver';
 import databus from '../managers/databus';
 import 'minigame-api-typings'
 import { DynamicResourceDefine } from '../resources/ResourceDefine';
+import { EventTrans } from '../events/EventTrans';
+import { RoomEvents } from '../events/RoomEvents';
+import { SceneUtils } from '../utils/SceneUtils';
 const { ccclass, property } = _decorator;
 
 
@@ -13,6 +16,9 @@ const { ccclass, property } = _decorator;
 export class UIStart extends Component {
     start() {
         console.log('小游戏运行平台', sys.platform);
+        EventTrans.instance.on(RoomEvents.createRoom, () => {
+            SceneUtils.loadRoom()
+        })
         // 判断小游戏运行的平台
         switch (sys.platform) {
             case sys.Platform.WECHAT_GAME:

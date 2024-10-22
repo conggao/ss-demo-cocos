@@ -4,6 +4,7 @@ import { DynamicResourceDefine } from '../resources/ResourceDefine';
 import databus from '../managers/databus';
 import { gameServer } from '../managers/gameserver';
 import { RoomEvents } from '../events/RoomEvents';
+import { SceneUtils } from '../utils/SceneUtils';
 const { ccclass, property } = _decorator;
 
 @ccclass('UIRoom')
@@ -12,9 +13,9 @@ export class UIRoom extends Component {
         // this.singin();
         // 游戏开始，跳转到游戏页面
         EventTrans.instance.on('onGameStart', () => {
-            // director.loadScene('game')
-            this.runScene('game')
+            SceneUtils.loadGame()
         })
+        this.onRoomInfoChange.bind(this)
         EventTrans.instance.on(RoomEvents.onRoomInfoChange, this.onRoomInfoChange)
         this.createOneUser({ headimg: databus.userInfo.avatarUrl, nickname: databus.userInfo.nickName })
     }
@@ -24,16 +25,6 @@ export class UIRoom extends Component {
         memberList.forEach(async (member, index) => {
             member.index = index;
             let user = await this.createOneUser(member)
-
-            if (member.isEmpty) {
-                user.on('pointerdown', () => {
-                    wx.shareAppMessage({
-                        title: '魔力任意门大逃杀',
-                        query: 'accessInfo=' + gameServer.accessInfo,
-                        imageUrl: 'https://res.wx.qq.com/wechatgame/product/luban/assets/img/sprites/bk.jpg',
-                    });
-                });
-            }
         })
 
     }
@@ -41,10 +32,12 @@ export class UIRoom extends Component {
 
     }
 
-    runScene(sceneName: string) {
-        director.loadScene(sceneName)
-    }
 
+    /**
+     * 创建房间玩家UI
+     * @param options 
+     * @returns 
+     */
     createOneUser(options): Promise<Node> {
         return new Promise((resolve, reject) => {
             const { headimg, index, nickname, role, isReady } = options;

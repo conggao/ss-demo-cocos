@@ -6,7 +6,7 @@ import {
     showTip,
 } from '../common/util';
 import { EventTrans } from '../events/EventTrans';
-import { sys } from 'cc';
+import { log, sys } from 'cc';
 import { RoomEvents } from '../events/RoomEvents';
 /**
  * 房间匹配、帧同步
@@ -220,10 +220,12 @@ export class GameServer {
     }
 
     /**
-     * 匹配到之后
+     * 匹配到之后触发
      * @param res 
      */
     onMatch(res: WechatMinigame.GameServerManagerOnMatchListenerResult) {
+
+        log('匹配到游戏了', res)
         let nickname = res.res.groupInfoList[0].memberInfoList[0].nickName;
 
         databus.currAccessInfo = this.accessInfo = res.res.roomServiceAccessInfo || "";
@@ -345,8 +347,9 @@ export class GameServer {
     }
 
     onRoomInfoChange(roomInfo) {
+        console.log('匹配到对手：', roomInfo);
         this.roomInfo = roomInfo;
-        this.event.emit('onRoomInfoChange', roomInfo);
+        this.event.emit(RoomEvents.onRoomInfoChange, roomInfo);
     }
 
     async login() {
