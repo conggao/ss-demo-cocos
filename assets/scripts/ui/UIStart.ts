@@ -26,6 +26,7 @@ export class UIStart extends Component {
                 wx.cloud.init();
                 //微信登录
                 this.wxLogin();
+                gameServer.login();
                 break;
             case sys.Platform.BAIDU_MINI_GAME:
                 console.log('游戏运行在百度小游戏平台上');

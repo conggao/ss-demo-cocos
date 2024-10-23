@@ -92,7 +92,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 640.0000000000001,
+      "x": 640,
       "y": 360.00000000000006,
       "z": 0
     },
@@ -178,7 +178,7 @@
     "_priority": 0,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 360,
+    "_orthoHeight": 403.6388323150034,
     "_near": 0,
     "_far": 1000,
     "_color": {
@@ -491,7 +491,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 109.5833293489902,
+      "width": 109.58351012672551,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -524,7 +524,7 @@
     "_string": "开始游戏",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 46.63708333333333,
+    "_actualFontSize": 47.297109375,
     "_fontSize": 27.4,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -730,7 +730,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 540.0000000000001,
+      "x": 540,
       "y": 0,
       "z": 0
     },
@@ -779,7 +779,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 334.8,
+      "y": 284.8,
       "z": 0
     },
     "_lrot": {
@@ -817,7 +817,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 119.99411910954711,
+      "width": 119.9880487666893,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -850,7 +850,7 @@
     "_string": "好友列表",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 51.0625,
+    "_actualFontSize": 51.78515625,
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -915,7 +915,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 284.6,
+      "y": 234.60000000000002,
       "z": 0
     },
     "_lrot": {
@@ -965,7 +965,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -78.87310723779835,
+      "x": -68.87417525882552,
       "y": 0,
       "z": 0
     },
@@ -1004,8 +1004,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 42.253785524403305,
-      "height": 50.400000000000006
+      "width": 42.25164948234895,
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1037,7 +1037,7 @@
     "_string": "label",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 34.04166666666667,
+    "_actualFontSize": 34.5234375,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1088,7 +1088,7 @@
     "__prefab": null,
     "_alignFlags": 8,
     "_target": null,
-    "_left": 0,
+    "_left": 10,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
@@ -1137,7 +1137,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 50,
+      "x": 40,
       "y": 0,
       "z": 0
     },
@@ -1257,7 +1257,7 @@
     "_string": "邀请",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 34.04166666666667,
+    "_actualFontSize": 34.5234375,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1370,7 +1370,7 @@
     "_alignFlags": 32,
     "_target": null,
     "_left": 0,
-    "_right": 0,
+    "_right": 10,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -1595,7 +1595,7 @@
     "_startAxis": 0,
     "_paddingLeft": 0,
     "_paddingRight": 0,
-    "_paddingTop": 0,
+    "_paddingTop": 50,
     "_paddingBottom": 10,
     "_spacingX": 0,
     "_spacingY": 0,
@@ -1631,7 +1631,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1280.0000000000002,
+      "width": 1280,
       "height": 720
     },
     "_anchorPoint": {
@@ -1683,7 +1683,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1280.0000000000002,
+      "width": 1280,
       "height": 720
     },
     "_anchorPoint": {

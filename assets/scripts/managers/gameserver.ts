@@ -215,30 +215,39 @@ export class GameServer {
         this.server.offMatch(this.onMatchHandler);
     }
 
-    onBroadcast() {
+    onBroadcast(res: WechatMinigame.OnBroadcastListenerResult) {
+        // 
+        console.log('接收到房间消息:', res);
+
         this.startGame();
     }
 
+    
     /**
      * 匹配到之后触发
      * @param res 
      */
-    onMatch(res: WechatMinigame.GameServerManagerOnMatchListenerResult) {
+    onMatch(res: WechatMinigame.OnMatchListenerResult) {
 
         log('匹配到游戏了', res)
-        let nickname = res.res.groupInfoList[0].memberInfoList[0].nickName;
+        let nickname = res.groupInfoList[0].memberInfoList[0].nickName;
 
-        databus.currAccessInfo = this.accessInfo = res.res.roomServiceAccessInfo || "";
+        databus.currAccessInfo = this.accessInfo = res.roomServiceAccessInfo || "";
 
+        /**
+         * 加入房间
+         */
         this.joinRoom(databus.currAccessInfo)
             .then((res) => {
                 let data = res.data || {};
                 databus.selfClientId = data.clientId;
 
+                // 设置为准备完成
                 this.updateReadyStatus(true);
 
                 if (databus.userInfo.nickName !== nickname) {
                     setTimeout(
+                        // 发送开始游戏的消息
                         this.server.broadcastInRoom.bind(this, {
                             msg: "START",
                         }),
@@ -258,7 +267,7 @@ export class GameServer {
     }
 
     onGameStart() {
-        console.log('onGameStart');
+        console.log('游戏开始');
         this.event.emit('onGameStart');
         /*if ( needEmit ) {
             this.event.emit('onGameStart');
@@ -421,7 +430,7 @@ export class GameServer {
         console.log('开始匹配对局:', nickName);
 
         this.server.startMatch({
-            matchId: "PpHeI1EFoV9dDkioXKHSamJsWctr7nfMwGtGJFJe9QE",
+            matchId: "Ik0mMxvyfZuYU7Luu8J5XPgXEu221s_nZN_Z2YLtang",
         });
 
         databus.matchPattern = true;
