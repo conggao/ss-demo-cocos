@@ -12,6 +12,7 @@ import { RoomEvents } from '../events/RoomEvents';
  * 房间匹配、帧同步
  */
 export class GameServer {
+    // #region 属性
     // 游戏服务管理对象（提供游戏服务相关的方法）
     server: WechatMinigame.GameServerManager;
     event = EventTrans.instance;
@@ -87,6 +88,7 @@ export class GameServer {
         this.isDisconnect = false;
         this.isLogout = false;
     }
+    // #endregion
 
     constructor() {
         if (!wx.getGameServerManager) {
@@ -318,6 +320,10 @@ export class GameServer {
         this.event.emit('backHome');
     }
 
+    /**
+     * 帧处理 接收到服务器同步过来的帧数据
+     * @param res 
+     */
     onSyncFrame(res: WechatMinigame.OnSyncFrameListenerResult) {
         if (res.frameId % 300 === 0) {
             console.log('heart');
@@ -546,6 +552,9 @@ export class GameServer {
         }
     }
 
+    /**
+     * 执行本地接收到的所有帧
+     */
     execFrame() {
         let frame = this.frames.shift();
 

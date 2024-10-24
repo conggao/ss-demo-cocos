@@ -5,6 +5,7 @@ import { StateDefine } from './StateDefine';
 const { ccclass, property } = _decorator;
 import doorConfig from '../config/SceneConfig'
 import { EventTrans } from '../events/EventTrans';
+import { gameServer } from '../managers/gameserver';
 
 let tempVelocity: Vec2 = v2();
 
@@ -95,6 +96,9 @@ export class Actor extends Component {
         // console.log('人物移动,速度：',speed);
         tempVelocity.x = speed;
         this.rigidbody.linearVelocity = tempVelocity;
+        if (speed!=0) {
+            gameServer.uploadFrame()
+        }
     }
 
     stopMove() {
