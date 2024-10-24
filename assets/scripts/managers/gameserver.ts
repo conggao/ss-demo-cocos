@@ -21,7 +21,7 @@ export class GameServer {
     isVersionLow = compareVersion(wx.getAppBaseInfo().SDKVersion, '2.14.4') < 0;
 
     // 用于存房间信息
-    roomInfo = {};
+    roomInfo = { memberList: [] };
 
     // 用于标记帧同步房间是否真正开始，如果没有开始，不能发送指令，玩家不能操作
     hasGameStart = false;
@@ -224,7 +224,7 @@ export class GameServer {
         this.startGame();
     }
 
-    
+
     /**
      * 匹配到之后触发
      * @param res 
@@ -277,29 +277,29 @@ export class GameServer {
 
         this.hasGameStart = true;
 
-        this.debugTime = setInterval(() => {
-            this.uploadFrame([
-                JSON.stringify({
-                    c: ++this.statCount,
-                    t: +new Date(),
-                    e: config.msg.STAT,
-                    id: databus.selfClientId,
-                })
-            ]);
+        // this.debugTime = setInterval(() => {
+        //     this.uploadFrame([
+        //         JSON.stringify({
+        //             c: ++this.statCount,
+        //             t: +new Date(),
+        //             e: config.msg.STAT,
+        //             id: databus.selfClientId,
+        //         })
+        //     ]);
 
-            let time = new Date().getTime() - this.startTime;
+        //     let time = new Date().getTime() - this.startTime;
 
-            databus.debugMsg = [
-                `游戏时间: ${time / 1000 + 's'}`,
-                `期望帧数: ${Math.floor(time / this.frameInterval)}帧`,
-                `实收帧数: ${this.svrFrameIndex}帧`,
-                `指令延迟: ${this.avgDelay.toFixed(1) + '(' + this.delay + ')'}ms`,
-            ];
-            this.reconnectSuccess && databus.debugMsg.push(`重连成功: ${this.reconnectSuccess}`);
-            this.reconnectFail && databus.debugMsg.push(`重连失败: ${this.reconnectFail}`);
+        //     databus.debugMsg = [
+        //         `游戏时间: ${time / 1000 + 's'}`,
+        //         `期望帧数: ${Math.floor(time / this.frameInterval)}帧`,
+        //         `实收帧数: ${this.svrFrameIndex}帧`,
+        //         `指令延迟: ${this.avgDelay.toFixed(1) + '(' + this.delay + ')'}ms`,
+        //     ];
+        //     this.reconnectSuccess && databus.debugMsg.push(`重连成功: ${this.reconnectSuccess}`);
+        //     this.reconnectFail && databus.debugMsg.push(`重连失败: ${this.reconnectFail}`);
 
-            databus.gameInstance.debug.updateDebugMsg(databus.debugMsg);
-        }, 1000);
+        //     databus.gameInstance.debug.updateDebugMsg(databus.debugMsg);
+        // }, 1000);
     }
 
     onGameEnd() {

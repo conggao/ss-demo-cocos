@@ -3,6 +3,10 @@ export const DynamicResourceDefine = {
     directory: ["effect", "audio", "actor", "ui"],
 
     Actor: {
+        Path: "prefab/actor",
+        Player: {
+            User: "prefab/actor/Player"
+        },
         Enemy: {
             Path: "actor/prefab/enemy",
         }
