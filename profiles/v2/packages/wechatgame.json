@@ -4,7 +4,7 @@
     "common": {
       "buildPath": "project://build",
       "outputName": "wechatgame",
-      "mainBundleCompressionType": "none",
+      "mainBundleCompressionType": "merge_dep",
       "platform": "wechatgame",
       "buildMode": "normal",
       "mainBundleIsRemote": false,

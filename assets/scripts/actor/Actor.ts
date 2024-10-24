@@ -37,7 +37,7 @@ export class Actor extends Component {
         EventTrans.instance.on("DoorOpenEvent", this.onDoorOpen, this)
         this.rigidbody = this.node.getComponent(RigidBody2D);
         this.collider = this.node.getComponent(Collider2D);
-        console.log(this.collider);
+        console.log(this.rigidbody);
 
         this.collider?.on(Contact2DType.BEGIN_CONTACT, this.onTriggerEnter, this);
         this.collider?.on(Contact2DType.END_CONTACT, this.onTriggerEnd, this);
@@ -91,6 +91,8 @@ export class Actor extends Component {
     // 玩家移动
     doMove() {
         let speed = this.linearSpeed * this.destForward;
+        // TODO 是否给 力 驱动会更自然
+        // console.log('人物移动,速度：',speed);
         tempVelocity.x = speed;
         this.rigidbody.linearVelocity = tempVelocity;
     }
