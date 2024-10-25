@@ -41,8 +41,8 @@
         "progress": 1,
         "state": "success",
         "stage": "build",
-        "message": "2024-10-25 00:49:54 build success in 4 s!",
-        "detailMessage": "// ---- build task wechatgame：onAfterBuild ----\r",
+        "message": "2024-10-25 17:14:15 build success in 21 s!",
+        "detailMessage": "builder:build-project-total (20961ms)\r",
         "options": {
           "name": "ss-demo",
           "server": "",
@@ -98,7 +98,7 @@
           "logDest": "project://temp/builder/log/wechatgame2024-10-9 20-33.log",
           "buildMode": "normal"
         },
-        "time": "2024-10-25 00:49:49",
+        "time": "2024-10-25 17:13:54",
         "dirty": false
       }
     }

@@ -15,6 +15,10 @@ const { ccclass, property } = _decorator;
 @ccclass('UIStart')
 export class UIStart extends Component {
     start() {
+        // 游戏开始，跳转到游戏页面
+        EventTrans.instance.on('onGameStart', () => {
+            SceneUtils.loadGame()
+        })
         console.log('小游戏运行平台', sys.platform);
         EventTrans.instance.on(RoomEvents.createRoom, () => {
             SceneUtils.loadRoom()

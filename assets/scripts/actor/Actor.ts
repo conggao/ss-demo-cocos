@@ -1,4 +1,4 @@
-import { _decorator, Collider2D, Component, RigidBody2D, CCFloat, Vec2, v2, Contact2DType, IPhysics2DContact, Node, Animation } from 'cc';
+import { _decorator, Collider2D, Component, RigidBody2D, CCFloat, Vec2, v2, Contact2DType, IPhysics2DContact, Node, Animation, sp } from 'cc';
 import { Events } from '../events/Events';
 import { PhysicsGroup } from './PhysicsGroup';
 import { StateDefine } from './StateDefine';
@@ -6,6 +6,8 @@ const { ccclass, property } = _decorator;
 import doorConfig from '../config/SceneConfig'
 import { EventTrans } from '../events/EventTrans';
 import { gameServer } from '../managers/gameserver';
+import config from '../config/config';
+import databus from '../managers/databus';
 
 let tempVelocity: Vec2 = v2();
 
@@ -96,9 +98,12 @@ export class Actor extends Component {
         // console.log('人物移动,速度：',speed);
         tempVelocity.x = speed;
         this.rigidbody.linearVelocity = tempVelocity;
-        if (speed!=0) {
-            gameServer.uploadFrame()
-        }
+        let evt = (speed === 0
+            ? { e: config.msg.MOVE_STOP, n: databus.selfClientId }
+            : { e: config.msg.MOVE_DIRECTION, n: databus.selfClientId, d: this.destForward });
+        gameServer.uploadFrame([
+            JSON.stringify(evt)
+        ]);
     }
 
     stopMove() {

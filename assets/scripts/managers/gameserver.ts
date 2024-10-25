@@ -6,8 +6,10 @@ import {
     showTip,
 } from '../common/util';
 import { EventTrans } from '../events/EventTrans';
-import { log, sys } from 'cc';
+import { director, log, sys } from 'cc';
 import { RoomEvents } from '../events/RoomEvents';
+import { UIGame } from '../ui/UIGame';
+import { Actor } from '../actor/Actor';
 /**
  * 房间匹配、帧同步
  */
@@ -386,9 +388,9 @@ export class GameServer {
 
                             this.server.reconnect({
                                 accessInfo: res.data.accessInfo
-                            }).then((connectRes: WechatMinigame.ReconnectSuccessRes) => {
+                            }).then((connectRes: any) => {
                                 console.log('未结束的游戏断线重连结果', connectRes);
-                                this.reconnectMaxFrameId = connectRes.object.data.maxFrameId[0] || 0;
+                                this.reconnectMaxFrameId = connectRes.maxFrameId || 0;
                                 this.reconnecting = true;
 
                                 // 手动调用onGameStart模拟正常开局
@@ -520,14 +522,14 @@ export class GameServer {
         return this.server.updateReadyStatus({ accessInfo: this.accessInfo, isReady });
     }
 
-    update(dt) {
+    update(dt, fn) {
         if (!this.frameStart) {
             return;
         }
 
         // 重连中不执行渲染
         if (!this.reconnecting) {
-            databus.gameInstance.renderUpdate(dt);
+            // databus.gameInstance.renderUpdate(dt);
         }
 
         // 本地从游戏开始到现在的运行时间
@@ -538,7 +540,7 @@ export class GameServer {
 
         if (currTimeDelta >= this.frameInterval) {
             if (this.frames.length) {
-                this.execFrame();
+                this.execFrame(fn);
                 this.currFrameIndex++;
             }
         }
@@ -546,7 +548,7 @@ export class GameServer {
         // 可能是断线重连的场景，本地有大量的帧，快进
         if (this.frames.length > this.frameJitLenght) {
             while (this.frames.length) {
-                this.execFrame();
+                this.execFrame(fn);
                 this.currFrameIndex++;
             }
         }
@@ -555,32 +557,18 @@ export class GameServer {
     /**
      * 执行本地接收到的所有帧
      */
-    execFrame() {
+    execFrame(fn) {
         let frame = this.frames.shift();
 
         // 每次执行逻辑帧，将指令同步后，演算游戏状态
-        databus.gameInstance.logicUpdate(this.frameInterval, frame.frameId);
+        // databus.gameInstance.logicUpdate(this.frameInterval, frame.frameId);
 
         (frame.actionList || []).forEach(oneFrame => {
             let obj = JSON.parse(oneFrame);
-
-            switch (obj.e) {
-                case config.msg.SHOOT:
-                    databus.playerMap[obj.n].shoot();
-                    break;
-
-                case config.msg.MOVE_DIRECTION:
-                    databus.playerMap[obj.n].setDestDegree(obj.d);
-                    break;
-
-                case config.msg.MOVE_STOP:
-                    databus.playerMap[obj.n].setSpeed(0);
-                    databus.playerMap[obj.n].desDegree = databus.playerMap[obj.n].frameDegree;
-                    break;
-            }
+            fn(obj.e)
         });
 
-        databus.gameInstance.preditUpdate(this.frameInterval);
+        // databus.gameInstance.preditUpdate(this.frameInterval);
     }
 
     settle() {

@@ -5,14 +5,17 @@ import { Actor } from './Actor';
 @ccclass('PlayerController')
 @requireComponent(Actor)
 export class PlayerController extends Component {
+    isOwner:boolean = false
     start() {
 
     }
 
     update(deltaTime: number) {
-        let x = VirtualInput.horizontal
-        let actor: Actor = this.node.getComponent('Actor') as Actor
-        actor.destForward = x
+        if (this.isOwner) {
+            let x = VirtualInput.horizontal
+            let actor: Actor = this.node.getComponent('Actor') as Actor
+            actor.destForward = x
+        }
     }
 }
 
