@@ -42,5 +42,20 @@ export class Events {
      */
     static onBgmVolumeChanged: string = "onBgmVolumeChanged";
 
+    /**
+    * 房间创建
+    */
+    static createRoom: string = "createRoom";
+
+    /**
+     * 房间有人加入
+     */
+    static onRoomInfoChange: string = "onRoomInfoChange";
+
+    /**
+     * 游戏开始
+     */
+    static onGameStart: string = "onGameStart";
+
 }
 

@@ -1,4 +1,4 @@
-import { _decorator, Collider2D, Component, RigidBody2D, CCFloat, Vec2, v2, Contact2DType, IPhysics2DContact, Node, Animation, sp } from 'cc';
+import { _decorator, Collider2D, Component, RigidBody2D, CCFloat, Vec2, v2, Contact2DType, IPhysics2DContact, Node, Animation, sp, director } from 'cc';
 import { Events } from '../events/Events';
 import { PhysicsGroup } from './PhysicsGroup';
 import { StateDefine } from './StateDefine';
@@ -29,7 +29,7 @@ export class Actor extends Component {
 
     rigidbody: RigidBody2D | null = null;
 
-    contactDoor: Node | null = null;
+    contactDoor: Node | null;
 
     get dead(): boolean {
         return this.currState == StateDefine.Die;
@@ -98,12 +98,6 @@ export class Actor extends Component {
         // console.log('人物移动,速度：',speed);
         tempVelocity.x = speed;
         this.rigidbody.linearVelocity = tempVelocity;
-        let evt = (speed === 0
-            ? { e: config.msg.MOVE_STOP, n: databus.selfClientId }
-            : { e: config.msg.MOVE_DIRECTION, n: databus.selfClientId, d: this.destForward });
-        gameServer.uploadFrame([
-            JSON.stringify(evt)
-        ]);
     }
 
     stopMove() {
@@ -127,13 +121,13 @@ export class Actor extends Component {
         console.log('发生碰撞', otherCollider);
         // 被碰撞的是门
         if (otherCollider.group === PhysicsGroup.Door) {
-            this.contactDoor = otherCollider.node
+            this.contactDoor = director.getScene().getChildByName('UIGame').getChildByName('Door').getChildByUuid(otherCollider.node.uuid)
         }
         // 判断两个物体是否可以碰撞
         if (!PhysicsGroup.isHurtable(otherCollider.group, this.collider.group)) {
             return;
         }
-        this.changeState(StateDefine.Die);
+        // this.changeState(StateDefine.Die);
     }
 
 }

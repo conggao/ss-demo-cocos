@@ -7,21 +7,9 @@
   "subMetas": {},
   "userData": {
     "isBundle": true,
-    "bundleConfigID": "default",
+    "bundleConfigID": "5cvrYeJXBDspMhdxkuLask",
     "bundleName": "resources",
     "priority": 8,
-    "bundleFilterConfig": [
-      {
-        "range": "include",
-        "type": "url",
-        "patchOption": {
-          "patchType": "glob",
-          "value": "db://assets/resources/**/*"
-        },
-        "assets": [
-          ""
-        ]
-      }
-    ]
+    "bundleFilterConfig": []
   }
 }

@@ -1,5 +1,4 @@
-import { _decorator, Component, ProgressBar, Label, Button, director, resources, Game, log, assetManager, Prefab, instantiate, Node } from 'cc';
-import { GameManager } from '../managers/GameManager';
+import { _decorator, Component, ProgressBar, Label, Button, director, resources, Game, log, assetManager, Prefab, instantiate, Node, EventHandler } from 'cc';
 import { GameServer, gameServer } from '../managers/gameserver';
 const { ccclass, property, requireComponent } = _decorator;
 import 'minigame-api-typings'
@@ -17,13 +16,11 @@ export class UIGame extends Component {
     isPaused: boolean = false;
 
     labelPause: Label | null = null;
-    @property(Component)
-    gameManager: GameManager
+
     // key为selfClientId
     playerMap: Map<number, Node> = new Map()
 
     start() {
-        this.initPlayer()
     }
 
 
@@ -88,9 +85,17 @@ export class UIGame extends Component {
                 }
                 let node: Node = instantiate(player!);
                 node.getChildByName('NickName').getComponent(Label).string = nickName
-                // 如果是自己
+                // 如果节点是自己，只能摇杆控制，如果节点不是自己，通过帧同步控制
                 if (databus.selfClientId === selfClientId) {
+                    console.log('自身玩家:', databus.selfClientId, nickName);
                     node.getComponent(PlayerController).isOwner = true
+                    // 绑定开门事件
+                    const openDoorBtn = director.getScene().getChildByName("UIGame").getChildByName("GameLayout").getChildByName("openDoor")
+                    const openDoorHandler = new EventHandler()
+                    openDoorHandler.target = node
+                    openDoorHandler.component = "Actor"
+                    openDoorHandler.handler = "openDoor"
+                    openDoorBtn.getComponent(Button).clickEvents[0] = openDoorHandler
                 }
                 this.node.addChild(node);
                 this.playerMap.set(selfClientId, node)
@@ -101,21 +106,31 @@ export class UIGame extends Component {
     /**
      * 执行帧同步
      */
-    executeFrame(frameData) {
-        const node =  (this.playerMap.get(frameData.n).getComponent("Actor") as Actor)
-        switch (frameData.e) {
-            case config.msg.MOVE_DIRECTION:
-                node.destForward = frameData.d
-                break;
-            case config.msg.MOVE_DIRECTION:
-                node.destForward = 0
-                break;
-            default:
-                break;
+    executeFrame = (frameData) => {
+        if (frameData.n === databus.selfClientId) {
+            return
+        }
+        const node = this.playerMap.get(frameData.n);
+        if (node) {
+            const nodeActor = (node.getComponent("Actor") as Actor)
+            switch (frameData.e) {
+                case config.msg.MOVE_DIRECTION:
+                    nodeActor.destForward = frameData.d
+                    break;
+                case config.msg.MOVE_STOP:
+                    nodeActor.destForward = 0
+                    break;
+                default:
+                    break;
+            }
         }
     }
+
     update(deltaTime: number) {
-        gameServer.update(deltaTime, this.executeFrame.bind(this))
+        if (databus.gameover) {
+            return;
+        }
+        gameServer.update(deltaTime, this.executeFrame)
     }
     onExitGame() {
         resources.releaseAll()

@@ -3,8 +3,8 @@ import { EventTrans } from '../events/EventTrans';
 import { DynamicResourceDefine } from '../resources/ResourceDefine';
 import databus from '../managers/databus';
 import { gameServer } from '../managers/gameserver';
-import { RoomEvents } from '../events/RoomEvents';
 import { SceneUtils } from '../utils/SceneUtils';
+import { Events } from '../events/Events';
 const { ccclass, property } = _decorator;
 
 @ccclass('UIRoom')
@@ -13,11 +13,11 @@ export class UIRoom extends Component {
     start() {
         // this.singin();
         // 游戏开始，跳转到游戏页面
-        EventTrans.instance.on('onGameStart', () => {
+        EventTrans.instance.on(Events.onGameStart, () => {
             SceneUtils.loadGame()
         })
         this.onRoomInfoChangeHandler = this.onRoomInfoChange.bind(this)
-        EventTrans.instance.on(RoomEvents.onRoomInfoChange, this.onRoomInfoChangeHandler)
+        EventTrans.instance.on(Events.onRoomInfoChange, this.onRoomInfoChangeHandler)
         this.createOneUser({ headimg: databus.userInfo.avatarUrl, nickname: databus.userInfo.nickName })
     }
     // 房间队伍信息改变

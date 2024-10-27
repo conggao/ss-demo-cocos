@@ -28,7 +28,8 @@
             "configMode": "fallback",
             "overwriteSettings": {
               "wechatgame": {
-                "isRemote": true
+                "isRemote": true,
+                "compressionType": "merge_dep"
               }
             }
           }
@@ -57,7 +58,45 @@
               "isRemote": false,
               "compressionType": "merge_dep"
             },
-            "configMode": "fallback"
+            "configMode": "overwrite",
+            "overwriteSettings": {
+              "wechatgame": {
+                "compressionType": "subpackage"
+              }
+            }
+          }
+        }
+      },
+      "8fS1Ci9gRPdbtf/H2rg6qy": {
+        "displayName": "netResources",
+        "configs": {
+          "native": {
+            "preferredOptions": {
+              "isRemote": false,
+              "compressionType": "merge_dep"
+            }
+          },
+          "web": {
+            "preferredOptions": {
+              "isRemote": false,
+              "compressionType": "merge_dep"
+            },
+            "fallbackOptions": {
+              "compressionType": "merge_dep"
+            }
+          },
+          "miniGame": {
+            "fallbackOptions": {
+              "isRemote": false,
+              "compressionType": "merge_dep"
+            },
+            "configMode": "overwrite",
+            "overwriteSettings": {
+              "wechatgame": {
+                "compressionType": "merge_dep",
+                "isRemote": true
+              }
+            }
           }
         }
       }

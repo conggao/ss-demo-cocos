@@ -7,9 +7,20 @@ import {
 } from '../common/util';
 import { EventTrans } from '../events/EventTrans';
 import { director, log, sys } from 'cc';
-import { RoomEvents } from '../events/RoomEvents';
 import { UIGame } from '../ui/UIGame';
-import { Actor } from '../actor/Actor';
+import { Events } from '../events/Events';
+
+interface FrameData {
+    // type
+    e: string
+    // clientId
+    n: number
+    /**
+     * type
+     * 2(移动): 摇杆偏移量
+     */
+    d: number
+}
 /**
  * 房间匹配、帧同步
  */
@@ -121,7 +132,7 @@ export class GameServer {
         this.server.onGameStart(this.onGameStartHandler);
         this.server.onGameEnd(this.onGameEndHandler);
         if (!this.isVersionLow) this.server.onMatch(this.onMatchHandler)
-
+        // 开启帧同步
         this.server.onGameStart((res) => {
             console.log('来自系统的onStart')
         });
@@ -184,15 +195,15 @@ export class GameServer {
             this.isLogout = true;
         });
 
-        this.server.onDisconnect((res: WechatMinigame.GameServerManagerOnDisconnectListenerResult) => {
+        this.server.onDisconnect((res:any) => {
             console.log('onDisconnect', res);
             this.isDisconnect = true;
-            res.res.type !== "game" && wx.showToast({
+            res.type !== "game" && wx.showToast({
                 title: "游戏已掉线...",
                 icon: "none",
                 duration: 2e3
             });
-            res.res.type === "game" && function (that) {
+            res.type === "game" && function (that) {
                 function relink() {
                     that.server.reconnect({
                         accessInfo: ''
@@ -233,7 +244,7 @@ export class GameServer {
      */
     onMatch(res: WechatMinigame.OnMatchListenerResult) {
 
-        log('匹配到游戏了', res)
+        console.log('匹配到游戏了', res)
         let nickname = res.groupInfoList[0].memberInfoList[0].nickName;
 
         databus.currAccessInfo = this.accessInfo = res.roomServiceAccessInfo || "";
@@ -243,8 +254,18 @@ export class GameServer {
          */
         this.joinRoom(databus.currAccessInfo)
             .then((res) => {
+                console.log('加入房间', res);
+
                 let data = res.data || {};
                 databus.selfClientId = data.clientId;
+                wx.setStorage({
+                    key: "selfClientId",
+                    data: data.clientId,
+                    encrypt: true,
+                    success() {
+                        // TODO 是否存储成功后再写入databus
+                    }
+                })
 
                 // 设置为准备完成
                 this.updateReadyStatus(true);
@@ -272,7 +293,7 @@ export class GameServer {
 
     onGameStart() {
         console.log('游戏开始');
-        this.event.emit('onGameStart');
+        this.event.emit(Events.onGameStart);
         /*if ( needEmit ) {
             this.event.emit('onGameStart');
         }*/
@@ -328,7 +349,7 @@ export class GameServer {
      */
     onSyncFrame(res: WechatMinigame.OnSyncFrameListenerResult) {
         if (res.frameId % 300 === 0) {
-            console.log('heart');
+            // console.log('heart');
         }
         this.svrFrameIndex = res.frameId;
         this.frames.push(res);
@@ -366,7 +387,8 @@ export class GameServer {
     onRoomInfoChange(roomInfo) {
         console.log('匹配到对手：', roomInfo);
         this.roomInfo = roomInfo;
-        this.event.emit(RoomEvents.onRoomInfoChange, roomInfo);
+        databus.selfClientId = roomInfo.memberList.filter(item => item.nickname === databus.userInfo.nickName)[0].clientId
+        this.event.emit(Events.onRoomInfoChange, roomInfo);
     }
 
     async login() {
@@ -390,11 +412,19 @@ export class GameServer {
                                 accessInfo: res.data.accessInfo
                             }).then((connectRes: any) => {
                                 console.log('未结束的游戏断线重连结果', connectRes);
+                                try {
+                                    const storage = wx.getStorageSync("selfClientId");
+                                    if (storage) {
+                                        databus.selfClientId = storage.selfClientId
+                                    }
+                                } catch (e) {
+
+                                }
                                 this.reconnectMaxFrameId = connectRes.maxFrameId || 0;
                                 this.reconnecting = true;
-
+                                wx.hideLoading()
                                 // 手动调用onGameStart模拟正常开局
-                                this.onGameStart();
+                                // this.onGameStart();
                             }).catch((e) => {
                                 console.log(e);
                                 wx.showToast({
@@ -423,7 +453,7 @@ export class GameServer {
                 const data = res.data;
                 databus.currAccessInfo = this.accessInfo = data.accessInfo || '';
                 databus.selfClientId = data.clientId;
-                this.event.emit(RoomEvents.createRoom);
+                this.event.emit(Events.createRoom);
                 console.log('创建房间成功', data);
                 callback && callback();
             }
@@ -443,9 +473,9 @@ export class GameServer {
 
         databus.matchPattern = true;
 
-        this.event.emit(RoomEvents.createRoom);
+        this.event.emit(Events.createRoom);
 
-        this.event.emit(RoomEvents.onRoomInfoChange, {
+        this.event.emit(Events.onRoomInfoChange, {
             memberList: [
                 { headimg: avatarUrl, nickname: nickName },
                 {
@@ -495,6 +525,7 @@ export class GameServer {
         });
     }
 
+    // 房主离开房间
     ownerLeaveRoom(callback) {
         this.server.ownerLeaveRoom({
             accessInfo: this.accessInfo,
@@ -554,6 +585,7 @@ export class GameServer {
         }
     }
 
+
     /**
      * 执行本地接收到的所有帧
      */
@@ -564,8 +596,8 @@ export class GameServer {
         // databus.gameInstance.logicUpdate(this.frameInterval, frame.frameId);
 
         (frame.actionList || []).forEach(oneFrame => {
-            let obj = JSON.parse(oneFrame);
-            fn(obj.e)
+            let obj = JSON.parse(oneFrame) as FrameData;
+            fn(obj)
         });
 
         // databus.gameInstance.preditUpdate(this.frameInterval);

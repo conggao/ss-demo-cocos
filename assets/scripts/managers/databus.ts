@@ -29,7 +29,7 @@ class DataBus {
         this.playerMap = {};
         this.playerList = [];
         this.selfPosNum = 0;
-        this.selfClientId = 1;
+        this.selfClientId = null;
         this.selfMemberInfo = {};
         this.debugMsg = [];
         this.matchPattern = void 0;

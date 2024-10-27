@@ -263,8 +263,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 51.120536738831085,
-      "height": 50.400000000000006
+      "width": 51.123046875,
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -302,7 +302,7 @@
     "_string": "用户1",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 34.04166666666667,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,

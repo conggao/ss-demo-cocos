@@ -5,4 +5,7 @@ export class EventTrans {
     static get instance(): EventTarget {
         return this._instance;
     }
+    static bindEvent(eventName: string, fn: any) {
+        this._instance.on(eventName, fn)
+    }
 }

@@ -23,7 +23,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 86
+      "__id__": 87
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -54,7 +54,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 90
+      "__id__": 91
     },
     "_id": "c1e1708f-9256-4e72-8d33-d44e0e4022aa"
   },
@@ -80,9 +80,6 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 82
-      },
-      {
         "__id__": 83
       },
       {
@@ -90,12 +87,15 @@
       },
       {
         "__id__": 85
+      },
+      {
+        "__id__": 86
       }
     ],
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 640.0000000000001,
+      "x": 640,
       "y": 360,
       "z": 0
     },
@@ -215,7 +215,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sprite",
+    "_name": "Door",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1827,7 +1827,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1280.0000000000002,
+      "width": 1280,
       "height": 720
     },
     "_anchorPoint": {
@@ -1975,6 +1975,9 @@
       },
       {
         "__id__": 81
+      },
+      {
+        "__id__": 82
       }
     ],
     "removedComponents": []
@@ -2368,7 +2371,6 @@
     "__type__": "a5e25ST3htKQ5I7GejAUaKV",
     "_name": "",
     "_objFlags": 0,
-    "__editorExtras__": {},
     "node": null,
     "_enabled": true,
     "__prefab": null,
@@ -2385,6 +2387,17 @@
     "value": "openDoor"
   },
   {
+    "__type__": "CCPropertyOverrideInfo",
+    "targetInfo": {
+      "__id__": 64
+    },
+    "propertyPath": [
+      "clickEvents",
+      "length"
+    ],
+    "value": 0
+  },
+  {
     "__type__": "cc.UITransform",
     "_name": "",
     "_objFlags": 0,
@@ -2396,7 +2409,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1280.0000000000002,
+      "width": 1280,
       "height": 720
     },
     "_anchorPoint": {
@@ -2472,7 +2485,7 @@
     "instance": null,
     "targetOverrides": [
       {
-        "__id__": 87
+        "__id__": 88
       }
     ],
     "nestedPrefabInstanceRoots": [
@@ -2487,7 +2500,7 @@
       "__id__": 53
     },
     "sourceInfo": {
-      "__id__": 88
+      "__id__": 89
     },
     "propertyPath": [
       "_target"
@@ -2496,7 +2509,7 @@
       "__id__": 53
     },
     "targetInfo": {
-      "__id__": 89
+      "__id__": 90
     }
   },
   {
@@ -2514,28 +2527,28 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 91
-    },
-    "shadows": {
       "__id__": 92
     },
-    "_skybox": {
+    "shadows": {
       "__id__": 93
     },
-    "fog": {
+    "_skybox": {
       "__id__": 94
     },
-    "octree": {
+    "fog": {
       "__id__": 95
     },
-    "skin": {
+    "octree": {
       "__id__": 96
     },
-    "lightProbeInfo": {
+    "skin": {
       "__id__": 97
     },
-    "postSettings": {
+    "lightProbeInfo": {
       "__id__": 98
+    },
+    "postSettings": {
+      "__id__": 99
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false

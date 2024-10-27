@@ -9,13 +9,13 @@
     },
     "buildPath": "project://build",
     "outputName": "wechatgame",
-    "mainBundleCompressionType": "merge_dep",
+    "mainBundleCompressionType": "subpackage",
     "platform": "wechatgame",
     "mainBundleIsRemote": false,
     "useBuiltinServer": false,
-    "startSceneAssetBundle": false,
-    "server": "",
-    "sourceMaps": true,
+    "startSceneAssetBundle": true,
+    "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
+    "sourceMaps": false,
     "debug": true,
     "scenes": [
       {
@@ -23,15 +23,21 @@
         "uuid": "c1e1708f-9256-4e72-8d33-d44e0e4022aa"
       },
       {
-        "url": "db://assets/scene/start.scene",
+        "url": "db://assets/scene/room.scene",
+        "uuid": "e372c0e2-e2d1-4c33-8bc1-a3fd31c92ab8"
+      },
+      {
+        "url": "db://assets/scene/home.scene",
         "uuid": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2"
       },
       {
-        "url": "db://assets/scene/room.scene",
-        "uuid": "e372c0e2-e2d1-4c33-8bc1-a3fd31c92ab8"
+        "url": "db://assets/scene/start.scene",
+        "uuid": "503d2525-af58-4af6-a1b1-bc554b1cdfa0"
       }
     ],
-    "startScene": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2"
+    "startScene": "503d2525-af58-4af6-a1b1-bc554b1cdfa0",
+    "bundleConfigs": [],
+    "md5Cache": true
   },
   "BuildTaskManager": {
     "taskMap": {
@@ -41,17 +47,17 @@
         "progress": 1,
         "state": "success",
         "stage": "build",
-        "message": "2024-10-25 17:14:15 build success in 21 s!",
-        "detailMessage": "builder:build-project-total (20961ms)\r",
+        "message": "2024-10-27 19:40:08 build success in 6 s!",
+        "detailMessage": "// ---- build task cocos-service：onAfterBuild ----\r",
         "options": {
           "name": "ss-demo",
-          "server": "",
+          "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
           "platform": "wechatgame",
           "buildPath": "project://build",
-          "debug": true,
-          "md5Cache": false,
+          "debug": false,
+          "md5Cache": true,
           "skipCompressTexture": false,
-          "sourceMaps": true,
+          "sourceMaps": false,
           "overwriteProjectSettings": {
             "macroConfig": {
               "cleanupImageCache": "on"
@@ -67,15 +73,15 @@
             "asyncFunctions": false
           },
           "experimentalEraseModules": false,
-          "startSceneAssetBundle": false,
+          "startSceneAssetBundle": true,
           "bundleConfigs": [],
           "useBuiltinServer": false,
           "mainBundleIsRemote": false,
-          "mainBundleCompressionType": "merge_dep",
+          "mainBundleCompressionType": "subpackage",
           "useSplashScreen": true,
           "bundleCommonChunk": false,
           "packAutoAtlas": true,
-          "startScene": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2",
+          "startScene": "503d2525-af58-4af6-a1b1-bc554b1cdfa0",
           "outputName": "wechatgame",
           "taskName": "wechatgame",
           "scenes": [
@@ -84,12 +90,16 @@
               "uuid": "c1e1708f-9256-4e72-8d33-d44e0e4022aa"
             },
             {
-              "url": "db://assets/scene/start.scene",
+              "url": "db://assets/scene/room.scene",
+              "uuid": "e372c0e2-e2d1-4c33-8bc1-a3fd31c92ab8"
+            },
+            {
+              "url": "db://assets/scene/home.scene",
               "uuid": "b04e59ab-e5b6-45f4-bc01-0d396fc065c2"
             },
             {
-              "url": "db://assets/scene/room.scene",
-              "uuid": "e372c0e2-e2d1-4c33-8bc1-a3fd31c92ab8"
+              "url": "db://assets/scene/start.scene",
+              "uuid": "503d2525-af58-4af6-a1b1-bc554b1cdfa0"
             }
           ],
           "wasmCompressionMode": false,
@@ -98,7 +108,7 @@
           "logDest": "project://temp/builder/log/wechatgame2024-10-9 20-33.log",
           "buildMode": "normal"
         },
-        "time": "2024-10-25 17:13:54",
+        "time": "2024-10-27 19:40:02",
         "dirty": false
       }
     }
