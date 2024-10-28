@@ -1,4 +1,4 @@
-import { _decorator, Component, ProgressBar, Label, Button, director, resources, Game, log, assetManager, Prefab, instantiate, Node, EventHandler } from 'cc';
+import { _decorator, Component, ProgressBar, Label, Button, director, resources, Game, log, assetManager, Prefab, instantiate, Node, EventHandler, sys } from 'cc';
 import { GameServer, gameServer } from '../managers/gameserver';
 const { ccclass, property, requireComponent } = _decorator;
 import 'minigame-api-typings'
@@ -20,7 +20,23 @@ export class UIGame extends Component {
     // key为selfClientId
     playerMap: Map<number, Node> = new Map()
 
+    isWxPlatform: boolean = false
+
     start() {
+        // 判断小游戏运行的平台
+        switch (sys.platform) {
+            case sys.Platform.WECHAT_GAME:
+                this.isWxPlatform = true;
+                break;
+            case sys.Platform.BAIDU_MINI_GAME:
+                console.log('游戏运行在百度小游戏平台上');
+                break;
+            default:
+                console.log('游戏不是运行在小游戏平台上');
+        }
+        if (config.debug) {
+            this.initPlayer()
+        }
     }
 
 
@@ -28,7 +44,16 @@ export class UIGame extends Component {
      * 初始化游戏玩家
      */
     initPlayer() {
-        let memberList = gameServer.roomInfo.memberList || [];
+        let memberList = []
+        if (this.isWxPlatform) {
+            memberList = gameServer.roomInfo.memberList || [];
+        }
+        if (config.debug) {
+            memberList = [
+                { clientId: 1, headimg: "", nickname: "高聪" },
+            ]
+            databus.selfClientId = 1
+        }
 
         memberList.forEach((member, index) => {
             let { role, clientId, nickname, isReady } = member;
@@ -130,11 +155,15 @@ export class UIGame extends Component {
         if (databus.gameover) {
             return;
         }
-        gameServer.update(deltaTime, this.executeFrame)
+        if (this.isWxPlatform) {
+            gameServer.update(deltaTime, this.executeFrame)
+        }
     }
     onExitGame() {
         resources.releaseAll()
-        gameServer.endGame()
+        if (this.isWxPlatform) {
+            gameServer.endGame()
+        }
         director.loadScene("start")
     }
 
