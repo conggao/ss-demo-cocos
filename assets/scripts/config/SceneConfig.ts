@@ -21,10 +21,22 @@ export const genDoorConfig = (floors: number, roomsPerFloor: number) => {
         roomConfig.push(room)
     }
 
+    let nextRoomIdxTmp
     for (let floor = 1; floor <= floors; floor++) {
         let hadPre = false
         let hadNext = false
         let roomTmp = JSON.parse(JSON.stringify(roomConfig))
+        // 随机一个门是通往下一层的
+        let nextRoomIdx = 0
+        nextRoomIdx = Math.floor(Math.random() * (roomsPerFloor - 1)) + 1
+        while (nextRoomIdx === nextRoomIdxTmp) {
+            nextRoomIdx = Math.floor(Math.random() * (roomsPerFloor - 1)) + 1
+        }
+        console.log('层数:' + floor + ',随机房间:' + nextRoomIdx);
+        var index = roomTmp.indexOf(nextRoomIdx);
+        if (index !== -1) {
+            roomTmp.splice(index, 1);
+        }
         for (let room = 1; room <= roomsPerFloor; room++) {
             let from = `${floor}-${room}`;
             let to;
@@ -36,11 +48,15 @@ export const genDoorConfig = (floors: number, roomsPerFloor: number) => {
                 continue
             }
 
-            // 每层楼只有一个门可以通往下一层，一个门可以通往上一层
-            if (floor < (floors - 1) && !hadNext) {
+            // 每层楼只有一个门可以通往下一层
+            if (floor < floors && !hadNext && nextRoomIdx === room) {
                 // 当前房间的门通往下一层的随机一个门
                 to = genTo(floor, roomTmp, false);
+                nextRoomIdxTmp = parseInt(to.split('-')[1])
                 hadNext = true
+            } else if (floor === floors && nextRoomIdx === room) {
+                // 最后一层楼
+                to = `${floor + 1}-1`;
             } else {
                 // 当前房间的门留在当前层
                 to = genTo(floor, roomTmp, true)
@@ -53,7 +69,6 @@ export const genDoorConfig = (floors: number, roomsPerFloor: number) => {
                             roomTmp.splice(index, 1);
                         }
                         to = genTo(floor, roomTmp, true)
-                        console.log('重新生成已存在的目标门', to);
                     } else {
                         isGen = true
                         break

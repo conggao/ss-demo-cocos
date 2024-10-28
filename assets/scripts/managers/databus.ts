@@ -35,7 +35,9 @@ class DataBus {
         this.selfMemberInfo = {};
         this.debugMsg = [];
         this.matchPattern = void 0;
-        this.doorConfig = genDoorConfig(6,6)
+        this.doorConfig = genDoorConfig(6, 6)
+        console.log('门配置:', this.doorConfig);
+
     }
 
 }
