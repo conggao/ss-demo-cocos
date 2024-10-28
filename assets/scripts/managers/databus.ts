@@ -1,4 +1,5 @@
 import 'minigame-api-typings'
+import { genDoorConfig } from '../config/SceneConfig';
 /**
  * 全局状态管理器
  */
@@ -19,6 +20,7 @@ class DataBus {
     // 是否在匹配对局
     matchPattern
     gameInstance: any;
+    doorConfig
     constructor() {
         this.reset();
     }
@@ -33,6 +35,7 @@ class DataBus {
         this.selfMemberInfo = {};
         this.debugMsg = [];
         this.matchPattern = void 0;
+        this.doorConfig = genDoorConfig(6,6)
     }
 
 }

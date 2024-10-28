@@ -10,6 +10,9 @@ import { director, log, sys } from 'cc';
 import { UIGame } from '../ui/UIGame';
 import { Events } from '../events/Events';
 
+/**
+ * 帧同步数据
+ */
 interface FrameData {
     // type
     e: string
@@ -177,7 +180,7 @@ export class GameServer {
         };
 
         wx.onNetworkStatusChange((res) => {
-            console.log('当前是否有网路连接', res.isConnected);
+            console.log('当前是否有网络连接', res.isConnected);
             let isConnected = res.isConnected;
 
             console.log('当前状态', this.isLogout, this.isDisconnect, this.isConnected);
@@ -195,7 +198,10 @@ export class GameServer {
             this.isLogout = true;
         });
 
-        this.server.onDisconnect((res:any) => {
+        /**
+         * 游戏掉线
+         */
+        this.server.onDisconnect((res: any) => {
             console.log('onDisconnect', res);
             this.isDisconnect = true;
             res.type !== "game" && wx.showToast({
@@ -215,7 +221,9 @@ export class GameServer {
                 relink();
             }(this);
         });
-
+        /**
+         * 游戏回到前台
+         */
         wx.onShow(() => {
             reconnect();
         });
@@ -391,6 +399,10 @@ export class GameServer {
         this.event.emit(Events.onRoomInfoChange, roomInfo);
     }
 
+    /**
+     * 登录游戏服务器
+     * 查询到有对局没有结束后重连继续游戏
+     */
     async login() {
         await this.server.login();
         this.server.getLastRoomInfo().then((res) => {
@@ -491,14 +503,22 @@ export class GameServer {
      * @param accessInfo 
      * @returns 
      */
-    joinRoom(accessInfo) {
+    joinRoom(accessInfo: string) {
         return this.server.joinRoom({ accessInfo });
     }
 
-    uploadFrame(actionList) {
+    /**
+     * 帧同步上报
+     * @param actionList 
+     */
+    uploadFrame(actionList: string[]) {
         this.hasGameStart && this.server.uploadFrame({ actionList });
     }
 
+    /**
+     * 获取房间信息
+     * @returns 
+     */
     getRoomInfo() {
         return this.server.getRoomInfo();
     }
@@ -537,10 +557,12 @@ export class GameServer {
         });
     }
 
+    // 取消匹配
     cancelMatch(res) {
         this.server.cancelMatch(res);
     }
 
+    // 改变房间座位
     changeSeat(posNum) {
         this.server.changeSeat({
             posNum,
@@ -549,6 +571,11 @@ export class GameServer {
         });
     }
 
+    /**
+     * 更新准备状态
+     * @param isReady 
+     * @returns 
+     */
     updateReadyStatus(isReady) {
         return this.server.updateReadyStatus({ accessInfo: this.accessInfo, isReady });
     }

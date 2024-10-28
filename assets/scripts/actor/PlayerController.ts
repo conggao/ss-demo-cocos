@@ -26,7 +26,7 @@ export class PlayerController extends Component {
     }
 
     update(deltaTime: number) {
-        if (this.isOwner) {
+        if (this.isOwner && !databus.gameover) {
             // 摇杆偏移量
             let x = VirtualInput.horizontal
             let actor: Actor = this.node.getComponent('Actor') as Actor

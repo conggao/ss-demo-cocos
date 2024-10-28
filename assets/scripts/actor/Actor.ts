@@ -3,10 +3,7 @@ import { Events } from '../events/Events';
 import { PhysicsGroup } from './PhysicsGroup';
 import { StateDefine } from './StateDefine';
 const { ccclass, property } = _decorator;
-import doorConfig from '../config/SceneConfig'
 import { EventTrans } from '../events/EventTrans';
-import { gameServer } from '../managers/gameserver';
-import config from '../config/config';
 import databus from '../managers/databus';
 
 let tempVelocity: Vec2 = v2();
@@ -72,10 +69,13 @@ export class Actor extends Component {
         console.log('播放开门动画结束');
         let doorName = this.contactDoor.name
         console.log(doorName);
-        let descDoor = this.contactDoor.getParent().getChildByName(doorConfig[doorName])
-        let descPosition = descDoor.getPosition()
-        this.node.setPosition(descPosition)
-        this.contactDoor = descDoor
+        let descDoor = this.contactDoor.getParent().getChildByName(databus.doorConfig[doorName])
+        if (descDoor) {
+            // 可能是规则配置问题
+            let descPosition = descDoor.getPosition()
+            this.node.setPosition(descPosition)
+            this.contactDoor = descDoor
+        }
     }
 
     update(deltaTime: number) {
@@ -122,6 +122,10 @@ export class Actor extends Component {
         // 被碰撞的是门
         if (otherCollider.group === PhysicsGroup.Door) {
             this.contactDoor = director.getScene().getChildByName('UIGame').getChildByName('Door').getChildByUuid(otherCollider.node.uuid)
+        }
+        // 被碰撞的是成功标志
+        if (otherCollider.group === PhysicsGroup.Victory) {
+            databus.gameover = true
         }
         // 判断两个物体是否可以碰撞
         if (!PhysicsGroup.isHurtable(otherCollider.group, this.collider.group)) {

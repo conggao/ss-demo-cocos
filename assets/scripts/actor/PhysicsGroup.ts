@@ -13,6 +13,8 @@ export class PhysicsGroup {
 
     static readonly Enemy = 1 << 3;
 
+    static readonly Victory = 1<<4;
+
     static isHurtable(srcGroup: number, destGroup: number): boolean {
 
         // 敌人可以抓玩家
