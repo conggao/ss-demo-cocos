@@ -6,9 +6,10 @@ import {
     showTip,
 } from '../common/util';
 import { EventTrans } from '../events/EventTrans';
-import { director, log, sys } from 'cc';
+import { Label, director, log, sys } from 'cc';
 import { UIGame } from '../ui/UIGame';
 import { Events } from '../events/Events';
+import { MsgData, MsgTypeEnum } from './Msg';
 
 /**
  * 帧同步数据
@@ -238,16 +239,29 @@ export class GameServer {
         this.server.offMatch(this.onMatchHandler);
     }
 
+    /**
+     * 游戏中的全局广播
+     * 
+     * @param res 
+     */
     onBroadcast(res: WechatMinigame.OnBroadcastListenerResult) {
         // 
-        console.log('接收到房间消息:', res);
-
-        this.startGame();
+        console.log('接收到房间消息:', res.msg);
+        const msg = JSON.parse(res.msg) as MsgData
+        switch (msg.type) {
+            case MsgTypeEnum.START:
+                this.startGame();
+                break;
+            case MsgTypeEnum.END:
+                director.getScene().getChildByName("UIGame").getChildByName('GameLayout').getChildByName('Layout').getChildByName('Msg').getComponent(Label).string = `${msg.data.nickName}获取胜利`
+            default:
+                break;
+        }
     }
 
 
     /**
-     * 匹配到之后触发
+     * 匹配到之后触发,加入到游戏房间并且全局广播游戏开始消息
      * @param res 
      */
     onMatch(res: WechatMinigame.OnMatchListenerResult) {
@@ -279,11 +293,15 @@ export class GameServer {
                 this.updateReadyStatus(true);
 
                 if (databus.userInfo.nickName !== nickname) {
+                    const msg = JSON.stringify({
+                        type: MsgTypeEnum.START,
+                        data: "游戏开始",
+                    })
                     setTimeout(
                         // 发送开始游戏的消息
-                        this.server.broadcastInRoom.bind(this, {
-                            msg: "START",
-                        }),
+                        () => {
+                            this.server.broadcastInRoom({ msg: msg, toPosNumList: [] })
+                        },
                         3000
                     );
                 }

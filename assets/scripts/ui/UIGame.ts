@@ -1,5 +1,5 @@
 import { _decorator, Component, ProgressBar, Label, Button, director, resources, Game, log, assetManager, Prefab, instantiate, Node, EventHandler, sys, Vec2, Vec3 } from 'cc';
-import { GameServer, gameServer } from '../managers/gameserver';
+import { gameServer } from '../managers/gameserver';
 const { ccclass, property, requireComponent } = _decorator;
 import 'minigame-api-typings'
 import { DynamicResourceDefine } from '../resources/ResourceDefine';
@@ -7,6 +7,11 @@ import { Actor } from '../actor/Actor';
 import config from '../config/config';
 import databus from '../managers/databus';
 import { PlayerController } from '../actor/PlayerController';
+import { EventTrans } from '../events/EventTrans';
+import { Events } from '../events/Events';
+import { UIJoyStick } from './UIJoyStick';
+import { VirtualInput } from '../input/VirtualInput';
+import { MsgData, MsgTypeEnum } from '../managers/Msg';
 /**
  * 游戏界面
  */
@@ -35,8 +40,32 @@ export class UIGame extends Component {
                 console.log('游戏不是运行在小游戏平台上');
         }
         if (config.debug) {
+            // TODO 非调试模式在加载场景时加载
             this.initPlayer()
         }
+        // 监听游戏结束事件
+        EventTrans.instance.on(Events.onGameEnd, () => {
+            databus.gameover = true
+            VirtualInput.reset()
+            // 禁用摇杆
+            director.getScene().getChildByName("UIGame").getChildByName('GameLayout').getChildByName('JoyStick').getComponent(UIJoyStick).onDestroy()
+            // 发送结束游戏的消息（完成游戏的玩家）
+            const msgStr = JSON.stringify({
+                type: MsgTypeEnum.END,
+                data: { clientId: databus.selfClientId, nickName: databus.userInfo.nickName }
+            })
+            if (this.isWxPlatform) {
+                gameServer.server.broadcastInRoom({
+                    msg: msgStr,
+                    toPosNumList: []
+                })
+            }
+            if (config.debug) {
+                const msg = JSON.parse(msgStr) as MsgData
+                director.getScene().getChildByName("UIGame").getChildByName('GameLayout').getChildByName('Layout').getChildByName('Msg').getComponent(Label).string = `${msg.data.nickName}获取胜利`
+            }
+
+        })
     }
 
 
@@ -45,8 +74,9 @@ export class UIGame extends Component {
      */
     initPlayer() {
         let memberList = []
-        if (this.isWxPlatform) {
+        if (gameServer) {
             memberList = gameServer.roomInfo.memberList || [];
+            console.log("房间人员列表：", memberList);
         }
         if (config.debug) {
             memberList = [

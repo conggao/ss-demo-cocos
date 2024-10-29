@@ -5,6 +5,8 @@ import { StateDefine } from './StateDefine';
 const { ccclass, property } = _decorator;
 import { EventTrans } from '../events/EventTrans';
 import databus from '../managers/databus';
+import { gameServer } from '../managers/gameserver';
+import { MsgTypeEnum } from '../managers/Msg';
 
 let tempVelocity: Vec2 = v2();
 
@@ -125,7 +127,7 @@ export class Actor extends Component {
         }
         // 被碰撞的是成功标志
         if (otherCollider.group === PhysicsGroup.Victory) {
-            databus.gameover = true
+            EventTrans.instance.emit(Events.onGameEnd)
             console.log('游戏结束，应发送消息判定该名玩家获胜');
         }
         // 判断两个物体是否可以碰撞

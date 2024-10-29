@@ -16,7 +16,7 @@
     "startSceneAssetBundle": true,
     "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
     "sourceMaps": false,
-    "debug": true,
+    "debug": false,
     "scenes": [
       {
         "url": "db://assets/scene/game.scene",
@@ -47,8 +47,8 @@
         "progress": 1,
         "state": "success",
         "stage": "build",
-        "message": "2024-10-27 19:40:08 build success in 6 s!",
-        "detailMessage": "// ---- build task cocos-service：onAfterBuild ----\r",
+        "message": "2024-10-29 18:06:15 build success in 20 s!",
+        "detailMessage": "// ---- build task adsense-h5g-plugin：onAfterBuild ----\r",
         "options": {
           "name": "ss-demo",
           "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
@@ -108,7 +108,7 @@
           "logDest": "project://temp/builder/log/wechatgame2024-10-9 20-33.log",
           "buildMode": "normal"
         },
-        "time": "2024-10-27 19:40:02",
+        "time": "2024-10-29 18:05:54",
         "dirty": false
       }
     }

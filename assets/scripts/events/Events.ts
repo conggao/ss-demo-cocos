@@ -1,10 +1,6 @@
-import { _decorator, Component, Node } from 'cc';
-const { ccclass, property } = _decorator;
-
 /**
  * 全局事件定义
  */
-@ccclass('Events')
 export class Events {
 
     /**
@@ -56,6 +52,10 @@ export class Events {
      * 游戏开始
      */
     static onGameStart: string = "onGameStart";
+     /**
+     * 游戏结束
+     */
+     static onGameEnd: string = "onGameEnd";
 
 }
 

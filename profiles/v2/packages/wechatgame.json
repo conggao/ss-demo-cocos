@@ -12,7 +12,7 @@
       "startSceneAssetBundle": true,
       "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
       "sourceMaps": false,
-      "debug": true,
+      "debug": false,
       "scenes": [
         {
           "url": "db://assets/scene/game.scene",

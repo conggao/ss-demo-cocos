@@ -5,7 +5,7 @@ import {
 const deviceinfo = getDeviceInfo();
 
 export default {
-    debug: true,
+    debug: false,
 
     dpr: deviceinfo.devicePixelRatio,
     windowWidth: deviceinfo.windowWidth,
