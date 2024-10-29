@@ -21,11 +21,18 @@ class DataBus {
     matchPattern
     gameInstance: any;
     doorConfig
+    // 多少层
+    floors: number
+    // 一层多少个门
+    roomsPerFloor: number
     constructor() {
         this.reset();
     }
 
     reset() {
+        // TODO 不同关卡对应不同配置，应放到map中
+        this.floors = 6;
+        this.roomsPerFloor = 6;
         this.gameover = false;
         this.currAccessInfo = '';
         this.playerMap = {};
@@ -35,9 +42,8 @@ class DataBus {
         this.selfMemberInfo = {};
         this.debugMsg = [];
         this.matchPattern = void 0;
-        this.doorConfig = genDoorConfig(6, 6)
+        this.doorConfig = genDoorConfig(this.floors, this.roomsPerFloor)
         console.log('门配置:', this.doorConfig);
-
     }
 
 }

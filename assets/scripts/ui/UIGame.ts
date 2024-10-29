@@ -1,4 +1,4 @@
-import { _decorator, Component, ProgressBar, Label, Button, director, resources, Game, log, assetManager, Prefab, instantiate, Node, EventHandler, sys } from 'cc';
+import { _decorator, Component, ProgressBar, Label, Button, director, resources, Game, log, assetManager, Prefab, instantiate, Node, EventHandler, sys, Vec2, Vec3 } from 'cc';
 import { GameServer, gameServer } from '../managers/gameserver';
 const { ccclass, property, requireComponent } = _decorator;
 import 'minigame-api-typings'
@@ -114,6 +114,7 @@ export class UIGame extends Component {
                 if (databus.selfClientId === selfClientId) {
                     console.log('自身玩家:', databus.selfClientId, nickName);
                     node.getComponent(PlayerController).isOwner = true
+                    // node.position = new Vec3(11.954, -328.759, 0);
                     // 绑定开门事件
                     const openDoorBtn = director.getScene().getChildByName("UIGame").getChildByName("GameLayout").getChildByName("openDoor")
                     const openDoorHandler = new EventHandler()

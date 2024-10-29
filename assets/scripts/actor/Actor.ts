@@ -126,6 +126,7 @@ export class Actor extends Component {
         // 被碰撞的是成功标志
         if (otherCollider.group === PhysicsGroup.Victory) {
             databus.gameover = true
+            console.log('游戏结束，应发送消息判定该名玩家获胜');
         }
         // 判断两个物体是否可以碰撞
         if (!PhysicsGroup.isHurtable(otherCollider.group, this.collider.group)) {
