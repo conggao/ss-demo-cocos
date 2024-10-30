@@ -12,6 +12,7 @@ import { Events } from '../events/Events';
 import { UIJoyStick } from './UIJoyStick';
 import { VirtualInput } from '../input/VirtualInput';
 import { MsgData, MsgTypeEnum } from '../managers/Msg';
+import { genDoorConfig } from '../config/SceneConfig';
 /**
  * 游戏界面
  */
@@ -42,6 +43,7 @@ export class UIGame extends Component {
         if (config.debug) {
             // TODO 非调试模式在加载场景时加载
             this.initPlayer()
+            databus.doorConfig = genDoorConfig()
         }
 
         // 监听游戏胜利事件
@@ -66,6 +68,7 @@ export class UIGame extends Component {
                 director.getScene().getChildByName("UIGame").getChildByName('GameLayout').getChildByName('Layout').getChildByName('Msg').getComponent(Label).string = `${msg.data.nickName}获取胜利`
             }
         })
+        EventTrans.instance.on("DoorOpenEvent", this.onDoorOpen, this)
     }
 
 
@@ -150,13 +153,29 @@ export class UIGame extends Component {
                     const openDoorHandler = new EventHandler()
                     openDoorHandler.target = node
                     openDoorHandler.component = "Actor"
-                    openDoorHandler.handler = "openDoor"
+                    openDoorHandler.handler = "uploadOpenDoorEvent"
                     openDoorBtn.getComponent(Button).clickEvents[0] = openDoorHandler
                 }
                 this.node.addChild(node);
                 this.playerMap.set(selfClientId, node)
             })
         })
+    }
+    // 事件帧动画，开门结束触发，人物移动到目标门
+    public onDoorOpen(clientId: number, doorName: string) {
+        let actor: Actor = this.playerMap.get(clientId).getComponent('Actor') as Actor
+        console.log('播放开门动画结束');
+        let descDoor = actor.contactDoor.getParent().getChildByName(databus.doorConfig[doorName])
+        if (descDoor) {
+            // 可能是规则配置问题
+            let descPosition = descDoor.getPosition()
+            this.playerMap.get(clientId).setPosition(descPosition)
+            actor.contactDoor = descDoor
+        }
+    }
+
+    public getDoor(doorName: string) {
+        return director.getScene().getChildByName('UIGame').getChildByName('Door').getChildByName(doorName)
     }
 
     /**
@@ -172,7 +191,7 @@ export class UIGame extends Component {
             switch (frameData.e) {
                 case config.msg.OPEN_DOOR:
                     console.log('帧同步：clientId' + frameData.n + ',开门');
-                    nodeActor.openDoor()
+                    nodeActor.openDoor(frameData.n, frameData.d)
                     break;
                 case config.msg.MOVE_DIRECTION:
                     nodeActor.destForward = frameData.d

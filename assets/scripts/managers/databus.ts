@@ -43,7 +43,6 @@ class DataBus {
         this.debugMsg = [];
         this.matchPattern = void 0;
         this.doorConfig = {}
-        console.log('门配置:', this.doorConfig);
     }
 
 }

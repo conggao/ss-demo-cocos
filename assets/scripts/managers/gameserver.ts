@@ -22,9 +22,10 @@ export interface FrameData {
     n: number
     /**
      * type
+     * 1(开门): 门编号
      * 2(移动): 摇杆偏移量
      */
-    d?: number
+    d?: number | string
 }
 /**
  * 房间匹配、帧同步

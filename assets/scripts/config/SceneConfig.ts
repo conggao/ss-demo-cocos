@@ -1,3 +1,5 @@
+import databus from "../managers/databus";
+
 export default {
     "1-1": "1-2",
     "1-2": "1-1",
@@ -14,7 +16,7 @@ export default {
  * @param rowNum 层高
  * @param clomnNum 每层多少房间
  */
-export const genDoorConfig = (floors: number, roomsPerFloor: number) => {
+export const genDoorConfig = (floors: number = databus.floors, roomsPerFloor: number = databus.roomsPerFloor) => {
     let config = {};
     const roomConfig = []
     for (let room = 1; room <= roomsPerFloor; room++) {
@@ -88,6 +90,7 @@ export const genDoorConfig = (floors: number, roomsPerFloor: number) => {
             }
         }
     }
+    console.log('门配置:', config);
     return config;
 }
 

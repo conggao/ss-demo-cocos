@@ -52,32 +52,42 @@ export class Actor extends Component {
     onDestroy() {
         this.collider?.off("onTriggerEnter", this.onTriggerEnter, this);
     }
-    openDoor() {
-        console.log('开门', this.contactDoor)
+    uploadOpenDoorEvent() {
         if (this.contactDoor) {
             if (isWxPlatform()) {
                 // 帧同步，开门事件
                 const msgStr = JSON.stringify({
                     e: config.msg.OPEN_DOOR,
                     n: databus.selfClientId,
+                    d: this.contactDoor.name
                 } as FrameData)
                 gameServer.server.uploadFrame({ actionList: [msgStr] })
             }
-
-            let animation: Animation = this.contactDoor.getComponent(Animation)
+            if (config.debug) {
+                this.openDoor(databus.selfClientId, this.contactDoor.name)
+            }
+        }
+    }
+    public getDoor(doorName: string) {
+        return director.getScene().getChildByName('UIGame').getChildByName('Door').getChildByName(doorName)
+    }
+    openDoor(clientId: number, doorName: string) {
+        if (doorName) {
+            const contactDoor = this.getDoor(doorName)
+            console.log('开门', contactDoor)
+            let animation: Animation = contactDoor.getComponent(Animation)
             if (animation && animation.defaultClip) {
                 const { defaultClip } = animation;
                 defaultClip.events = [
                     {
                         frame: 0.95, // 第 0.5 秒时触发事件
                         func: 'onDoorOpen', // 事件触发时调用的函数名称
-                        params: [databus.selfClientId], // 向 `func` 传递的参数
+                        params: [clientId.toString(), doorName], // 向 `func` 传递的参数
                     }
                 ];
                 animation.clips = animation.clips;
             }
             animation.play('openDoorAnim')
-
             console.log('播放开门动画');
         }
     }
@@ -85,7 +95,6 @@ export class Actor extends Component {
     public onDoorOpen(arg: number) {
         console.log('播放开门动画结束，', arg);
     }
-
 
     update(deltaTime: number) {
         if (this.currState == StateDefine.Die) {

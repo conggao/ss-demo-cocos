@@ -13,7 +13,6 @@ export class PlayerController extends Component {
     isOwner: boolean = false
     isWxPlatform: boolean = false
     start() {
-        EventTrans.instance.on("DoorOpenEvent", this.onDoorOpen, this)
         // 判断小游戏运行的平台
         switch (sys.platform) {
             case sys.Platform.WECHAT_GAME:
@@ -26,25 +25,7 @@ export class PlayerController extends Component {
                 console.log('游戏不是运行在小游戏平台上');
         }
     }
-    // 事件帧动画，开门结束触发，人物移动到目标门
-    public onDoorOpen() {
-        if (this.isOwner) {
-            let actor: Actor = this.node.getComponent('Actor') as Actor
-            console.log('播放开门动画结束');
-            if (actor.contactDoor) {
-                let doorName = actor.contactDoor.name
-                console.log(doorName);
-                let descDoor = actor.contactDoor.getParent().getChildByName(databus.doorConfig[doorName])
-                if (descDoor) {
-                    // 可能是规则配置问题
-                    let descPosition = descDoor.getPosition()
-                    this.node.setPosition(descPosition)
-                    actor.contactDoor = descDoor
-                }
-            }
-        }
-    }
-
+  
     update(deltaTime: number) {
         if (this.isOwner && !databus.gameover) {
             // 摇杆偏移量

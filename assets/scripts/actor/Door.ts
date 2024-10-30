@@ -12,9 +12,9 @@ export class Door extends Component {
 
     }
     // 事件帧动画，开门结束触发，人物移动到目标门
-    public onDoorOpen(clientId: number) {
-        console.log('播放开门动画结束，', arg);
-        EventTrans.instance.emit("DoorOpenEvent")
+    public onDoorOpen(clientId: string, doorName: string) {
+        console.log('播放开门动画结束，', clientId, doorName);
+        EventTrans.instance.emit("DoorOpenEvent", parseInt(clientId), doorName)
     }
 }
 
