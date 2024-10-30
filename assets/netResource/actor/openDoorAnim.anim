@@ -19,18 +19,7 @@
       }
     ],
     "_exoticAnimation": null,
-    "_events": [
-      {
-        "frame": 0.95,
-        "func": "",
-        "params": []
-      },
-      {
-        "frame": 0.95,
-        "func": "onDoorOpen",
-        "params": []
-      }
-    ],
+    "_events": [],
     "_embeddedPlayers": [],
     "_additiveSettings": {
       "__id__": 6

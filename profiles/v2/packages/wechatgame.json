@@ -11,8 +11,8 @@
       "useBuiltinServer": false,
       "startSceneAssetBundle": true,
       "server": "https://7072-prod-6g7pcu8aa3559172-1330282868.tcb.qcloud.la/",
-      "sourceMaps": false,
-      "debug": false,
+      "sourceMaps": true,
+      "debug": true,
       "scenes": [
         {
           "url": "db://assets/scene/game.scene",
@@ -48,6 +48,15 @@
     },
     "taskOptionsMap": {
       "1728477239076": {
+        "orientation": "landscapeRight",
+        "appid": "wx602b82e76be49bb9",
+        "buildOpenDataContextTemplate": "",
+        "separateEngine": false,
+        "highPerformanceMode": false,
+        "__version__": "1.0.4",
+        "wasmSubpackage": true
+      },
+      "1730251607519": {
         "orientation": "landscapeRight",
         "appid": "wx602b82e76be49bb9",
         "buildOpenDataContextTemplate": "",

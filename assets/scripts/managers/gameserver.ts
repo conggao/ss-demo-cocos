@@ -10,20 +10,21 @@ import { Label, director, log, sys } from 'cc';
 import { UIGame } from '../ui/UIGame';
 import { Events } from '../events/Events';
 import { MsgData, MsgTypeEnum } from './Msg';
+import { genDoorConfig } from '../config/SceneConfig';
 
 /**
  * 帧同步数据
  */
-interface FrameData {
-    // type
-    e: string
+export interface FrameData {
+    // type config.msg.type
+    e: number
     // clientId
     n: number
     /**
      * type
      * 2(移动): 摇杆偏移量
      */
-    d: number
+    d?: number
 }
 /**
  * 房间匹配、帧同步
@@ -250,10 +251,22 @@ export class GameServer {
         const msg = JSON.parse(res.msg) as MsgData
         switch (msg.type) {
             case MsgTypeEnum.START:
+                if (databus.selfClientId === 1) {
+                    databus.doorConfig = genDoorConfig(databus.floors, databus.roomsPerFloor)
+                    const doorConfigMsg = JSON.stringify({
+                        type: MsgTypeEnum.DOOR_CONFIG,
+                        data: databus.doorConfig
+                    } as MsgData)
+                    this.server.broadcastInRoom({ msg: doorConfigMsg, toPosNumList: [] })
+                }
                 this.startGame();
                 break;
             case MsgTypeEnum.END:
                 director.getScene().getChildByName("UIGame").getChildByName('GameLayout').getChildByName('Layout').getChildByName('Msg').getComponent(Label).string = `${msg.data.nickName}获取胜利`
+                break
+            case MsgTypeEnum.DOOR_CONFIG:
+                databus.doorConfig = msg.data
+                break;
             default:
                 break;
         }
@@ -296,7 +309,7 @@ export class GameServer {
                     const msg = JSON.stringify({
                         type: MsgTypeEnum.START,
                         data: "游戏开始",
-                    })
+                    } as MsgData)
                     setTimeout(
                         // 发送开始游戏的消息
                         () => {
@@ -463,6 +476,8 @@ export class GameServer {
                                     duration: 2000
                                 });
                             });
+                        } else {
+                            this.event.emit(Events.onGameEnd);
                         }
                     }
                 });
@@ -507,11 +522,7 @@ export class GameServer {
 
         this.event.emit(Events.onRoomInfoChange, {
             memberList: [
-                { headimg: avatarUrl, nickname: nickName },
-                {
-                    headimg: "images/avatar_default.png",
-                    nickname: "正在匹配玩家...",
-                },
+                { headimg: avatarUrl, nickname: nickName }
             ]
         });
     }
@@ -546,7 +557,13 @@ export class GameServer {
      * @returns 
      */
     startGame() {
-        return this.server.startGame();
+        return this.server.startGame({
+            success: () => {
+                console.log('游戏启动成功');
+            }, fail: (res: WechatMinigame.GeneralCallbackResult) => {
+                console.log('游戏启动失败，' + res.errMsg);
+            }
+        });
     }
 
     /**

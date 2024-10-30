@@ -16,11 +16,8 @@ export class UIStart extends Component {
     start() {
         // 游戏开始，跳转到游戏页面
         EventTrans.instance.on(Events.onGameStart, () => {
-            console.log('游戏开始，跳转到游戏页面');
-            
             SceneUtils.loadGame()
         })
-        console.log('小游戏运行平台', sys.platform);
         EventTrans.instance.on(Events.createRoom, () => {
             SceneUtils.loadRoom()
         })

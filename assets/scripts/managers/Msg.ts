@@ -8,5 +8,6 @@ export interface MsgData {
 }
 export enum MsgTypeEnum {
     START,
-    END
+    END,
+    DOOR_CONFIG
 }

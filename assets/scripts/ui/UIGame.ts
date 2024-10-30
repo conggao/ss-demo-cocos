@@ -43,8 +43,9 @@ export class UIGame extends Component {
             // TODO 非调试模式在加载场景时加载
             this.initPlayer()
         }
-        // 监听游戏结束事件
-        EventTrans.instance.on(Events.onGameEnd, () => {
+
+        // 监听游戏胜利事件
+        EventTrans.instance.on(Events.onGameVectory, () => {
             databus.gameover = true
             VirtualInput.reset()
             // 禁用摇杆
@@ -64,7 +65,6 @@ export class UIGame extends Component {
                 const msg = JSON.parse(msgStr) as MsgData
                 director.getScene().getChildByName("UIGame").getChildByName('GameLayout').getChildByName('Layout').getChildByName('Msg').getComponent(Label).string = `${msg.data.nickName}获取胜利`
             }
-
         })
     }
 
@@ -170,6 +170,10 @@ export class UIGame extends Component {
         if (node) {
             const nodeActor = (node.getComponent("Actor") as Actor)
             switch (frameData.e) {
+                case config.msg.OPEN_DOOR:
+                    console.log('帧同步：clientId' + frameData.n + ',开门');
+                    nodeActor.openDoor()
+                    break;
                 case config.msg.MOVE_DIRECTION:
                     nodeActor.destForward = frameData.d
                     break;

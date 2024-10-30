@@ -5,7 +5,7 @@ import {
 const deviceinfo = getDeviceInfo();
 
 export default {
-    debug: false,
+    debug: true,
 
     dpr: deviceinfo.devicePixelRatio,
     windowWidth: deviceinfo.windowWidth,
@@ -34,7 +34,7 @@ export default {
     ],
 
     msg: {
-        "SHOOT": 1,
+        "OPEN_DOOR": 1,
         "MOVE_DIRECTION": 2,
         "MOVE_STOP": 3,
         "STAT": 4,

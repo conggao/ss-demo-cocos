@@ -57,5 +57,11 @@ export class Events {
      */
      static onGameEnd: string = "onGameEnd";
 
+      /**
+     * 游戏胜利
+     */
+      static onGameVectory: string = "onGameVectory";
+
+
 }
 

@@ -5,8 +5,10 @@ import { StateDefine } from './StateDefine';
 const { ccclass, property } = _decorator;
 import { EventTrans } from '../events/EventTrans';
 import databus from '../managers/databus';
-import { gameServer } from '../managers/gameserver';
+import { gameServer, FrameData } from '../managers/gameserver';
 import { MsgTypeEnum } from '../managers/Msg';
+import config from '../config/config';
+import { isWxPlatform } from '../utils/Platform';
 
 let tempVelocity: Vec2 = v2();
 
@@ -34,9 +36,7 @@ export class Actor extends Component {
         return this.currState == StateDefine.Die;
     }
 
-
     start() {
-        EventTrans.instance.on("DoorOpenEvent", this.onDoorOpen, this)
         this.rigidbody = this.node.getComponent(RigidBody2D);
         this.collider = this.node.getComponent(Collider2D);
         console.log(this.rigidbody);
@@ -55,30 +55,37 @@ export class Actor extends Component {
     openDoor() {
         console.log('开门', this.contactDoor)
         if (this.contactDoor) {
+            if (isWxPlatform()) {
+                // 帧同步，开门事件
+                const msgStr = JSON.stringify({
+                    e: config.msg.OPEN_DOOR,
+                    n: databus.selfClientId,
+                } as FrameData)
+                gameServer.server.uploadFrame({ actionList: [msgStr] })
+            }
+
             let animation: Animation = this.contactDoor.getComponent(Animation)
+            if (animation && animation.defaultClip) {
+                const { defaultClip } = animation;
+                defaultClip.events = [
+                    {
+                        frame: 0.95, // 第 0.5 秒时触发事件
+                        func: 'onDoorOpen', // 事件触发时调用的函数名称
+                        params: [databus.selfClientId], // 向 `func` 传递的参数
+                    }
+                ];
+                animation.clips = animation.clips;
+            }
             animation.play('openDoorAnim')
+
             console.log('播放开门动画');
-
-            // animation.on(Animation.EventType.STOP, () => {
-            //     let descPosition = this.contactDoor.getParent().getChildByName(doorConfig[doorName]).getPosition()
-            //     this.node.setPosition(descPosition)
-            // }, this)
         }
     }
-
     // 事件帧动画，开门结束触发，人物移动到目标门
-    public onDoorOpen() {
-        console.log('播放开门动画结束');
-        let doorName = this.contactDoor.name
-        console.log(doorName);
-        let descDoor = this.contactDoor.getParent().getChildByName(databus.doorConfig[doorName])
-        if (descDoor) {
-            // 可能是规则配置问题
-            let descPosition = descDoor.getPosition()
-            this.node.setPosition(descPosition)
-            this.contactDoor = descDoor
-        }
+    public onDoorOpen(arg: number) {
+        console.log('播放开门动画结束，', arg);
     }
+
 
     update(deltaTime: number) {
         if (this.currState == StateDefine.Die) {
@@ -127,7 +134,7 @@ export class Actor extends Component {
         }
         // 被碰撞的是成功标志
         if (otherCollider.group === PhysicsGroup.Victory) {
-            EventTrans.instance.emit(Events.onGameEnd)
+            EventTrans.instance.emit(Events.onGameVectory)
             console.log('游戏结束，应发送消息判定该名玩家获胜');
         }
         // 判断两个物体是否可以碰撞

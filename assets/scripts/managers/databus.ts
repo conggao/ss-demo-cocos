@@ -42,7 +42,7 @@ class DataBus {
         this.selfMemberInfo = {};
         this.debugMsg = [];
         this.matchPattern = void 0;
-        this.doorConfig = genDoorConfig(this.floors, this.roomsPerFloor)
+        this.doorConfig = {}
         console.log('门配置:', this.doorConfig);
     }
 
