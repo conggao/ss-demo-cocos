@@ -5,6 +5,7 @@ import 'minigame-api-typings'
 import { EventTrans } from '../events/EventTrans';
 import { SceneUtils } from '../utils/SceneUtils';
 import { Events } from '../events/Events';
+import { isWxPlatform } from '../utils/Platform';
 const { ccclass, property } = _decorator;
 
 
@@ -18,6 +19,13 @@ export class UIStart extends Component {
         EventTrans.instance.on(Events.onGameStart, () => {
             SceneUtils.loadGame()
         })
+        // 监听游戏结束事件
+        EventTrans.instance.on(Events.onGameEnd, () => {
+            if (isWxPlatform()) {
+                gameServer.endGame()
+            }
+        })
+        // 监听创建房间事件
         EventTrans.instance.on(Events.createRoom, () => {
             SceneUtils.loadRoom()
         })
@@ -112,14 +120,9 @@ export class UIStart extends Component {
     }
 
     onCreateRoom() {
-        gameServer.login().then(
-            () => {
-                gameServer.createRoom({}, () => {
-                    console.log('创建房间成功后回调');
-                    director.loadScene("room")
-                })
-            }
-        )
+        gameServer.createRoom({}, () => {
+            console.log('创建房间成功后回调');
+        })
     }
 
     joinToRoom() {

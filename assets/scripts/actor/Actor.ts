@@ -17,7 +17,7 @@ let tempVelocity: Vec2 = v2();
  */
 @ccclass('Actor')
 export class Actor extends Component {
-
+    isOwner: boolean = false
     currState: StateDefine | string = StateDefine.Idle;
 
     collider: Collider2D | null = null;
@@ -39,7 +39,6 @@ export class Actor extends Component {
     start() {
         this.rigidbody = this.node.getComponent(RigidBody2D);
         this.collider = this.node.getComponent(Collider2D);
-        console.log(this.rigidbody);
 
         this.collider?.on(Contact2DType.BEGIN_CONTACT, this.onTriggerEnter, this);
         this.collider?.on(Contact2DType.END_CONTACT, this.onTriggerEnd, this);
@@ -52,25 +51,11 @@ export class Actor extends Component {
     onDestroy() {
         this.collider?.off("onTriggerEnter", this.onTriggerEnter, this);
     }
-    uploadOpenDoorEvent() {
-        if (this.contactDoor) {
-            if (isWxPlatform()) {
-                // 帧同步，开门事件
-                const msgStr = JSON.stringify({
-                    e: config.msg.OPEN_DOOR,
-                    n: databus.selfClientId,
-                    d: this.contactDoor.name
-                } as FrameData)
-                gameServer.server.uploadFrame({ actionList: [msgStr] })
-            }
-            if (config.debug) {
-                this.openDoor(databus.selfClientId, this.contactDoor.name)
-            }
-        }
-    }
+    
     public getDoor(doorName: string) {
         return director.getScene().getChildByName('UIGame').getChildByName('Door').getChildByName(doorName)
     }
+    
     openDoor(clientId: number, doorName: string) {
         if (doorName) {
             const contactDoor = this.getDoor(doorName)
@@ -90,10 +75,6 @@ export class Actor extends Component {
             animation.play('openDoorAnim')
             console.log('播放开门动画');
         }
-    }
-    // 事件帧动画，开门结束触发，人物移动到目标门
-    public onDoorOpen(arg: number) {
-        console.log('播放开门动画结束，', arg);
     }
 
     update(deltaTime: number) {

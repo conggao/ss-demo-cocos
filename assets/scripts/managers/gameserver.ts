@@ -139,9 +139,9 @@ export class GameServer {
         this.server.onGameEnd(this.onGameEndHandler);
         if (!this.isVersionLow) this.server.onMatch(this.onMatchHandler)
         // 开启帧同步
-        this.server.onGameStart((res) => {
-            console.log('来自系统的onStart')
-        });
+        // this.server.onGameStart((res) => {
+        //     console.log('来自系统的onStart')
+        // });
 
         const reconnect = () => {
             // 如果logout了，需要先logout再connect
@@ -266,7 +266,15 @@ export class GameServer {
                 director.getScene().getChildByName("UIGame").getChildByName('GameLayout').getChildByName('Layout').getChildByName('Msg').getComponent(Label).string = `${msg.data.nickName}获取胜利`
                 break
             case MsgTypeEnum.DOOR_CONFIG:
+                console.log('接收到门配置信息');
                 databus.doorConfig = msg.data
+                wx.setStorage({
+                    key: "doorConfig",
+                    data: JSON.stringify(databus.doorConfig),
+                    encrypt: true,
+                    success() {
+                    }
+                })
                 break;
             default:
                 break;
@@ -294,14 +302,6 @@ export class GameServer {
 
                 let data = res.data || {};
                 databus.selfClientId = data.clientId;
-                wx.setStorage({
-                    key: "selfClientId",
-                    data: data.clientId,
-                    encrypt: true,
-                    success() {
-                        // TODO 是否存储成功后再写入databus
-                    }
-                })
 
                 // 设置为准备完成
                 this.updateReadyStatus(true);
@@ -333,6 +333,14 @@ export class GameServer {
 
     onGameStart() {
         console.log('游戏开始');
+        // TODO 是否存储成功后再写入databus
+        wx.setStorage({
+            key: "selfClientId",
+            data: databus.selfClientId.toString(),
+            encrypt: true,
+            success() {
+            }
+        })
         this.event.emit(Events.onGameStart);
         /*if ( needEmit ) {
             this.event.emit('onGameStart');
@@ -366,9 +374,8 @@ export class GameServer {
     }
 
     onGameEnd() {
-        this.settle();
         this.reset();
-        this.event.emit('onGameEnd');
+        this.event.emit(Events.onGameEnd);
 
         clearInterval(this.debugTime);
     }
@@ -424,7 +431,7 @@ export class GameServer {
         }
     }
 
-    onRoomInfoChange(roomInfo) {
+    onRoomInfoChange(roomInfo: WechatMinigame.OnRoomInfoChangeListenerResult) {
         console.log('匹配到对手：', roomInfo);
         this.roomInfo = roomInfo;
         databus.selfClientId = roomInfo.memberList.filter(item => item.nickname === databus.userInfo.nickName)[0].clientId
@@ -437,51 +444,75 @@ export class GameServer {
      */
     async login() {
         await this.server.login();
-        this.server.getLastRoomInfo().then((res) => {
-            // 查询到之前的游戏还没结束
-            if (res.data && res.data.roomInfo && res.data.roomInfo.roomState === config.roomState.gameStart) {
-                console.log('查询到还有没结束的游戏', res.data);
-                wx.showModal({
-                    title: '温馨提示',
-                    content: '查询到之前还有尚未结束的游戏，是否重连继续游戏？',
-                    success: (modalRes_1) => {
-                        if (modalRes_1.confirm) {
-                            this.onRoomInfoChange(res.data.roomInfo);
+        this.server.getLastRoomInfo({
+            success: (res: WechatMinigame.GetLastRoomInfoSuccessCallbackResult) => {
+                // 查询到之前的游戏还没结束
+                if (res.data && res.data.roomInfo && res.data.roomInfo.roomState === config.roomState.gameStart) {
+                    console.log('查询到还有没结束的游戏', res.data);
+                    wx.showModal({
+                        title: '温馨提示',
+                        content: '查询到之前还有尚未结束的游戏，是否重连继续游戏？',
+                        success: (modalRes_1) => {
+                            if (modalRes_1.confirm) {
+                                this.onRoomInfoChange(res.data.roomInfo);
 
-                            wx.showLoading({
-                                title: '重连中...',
-                            });
-
-                            this.server.reconnect({
-                                accessInfo: res.data.accessInfo
-                            }).then((connectRes: any) => {
-                                console.log('未结束的游戏断线重连结果', connectRes);
-                                try {
-                                    const storage = wx.getStorageSync("selfClientId");
-                                    if (storage) {
-                                        databus.selfClientId = storage.selfClientId
-                                    }
-                                } catch (e) {
-
-                                }
-                                this.reconnectMaxFrameId = connectRes.maxFrameId || 0;
-                                this.reconnecting = true;
-                                wx.hideLoading()
-                                // 手动调用onGameStart模拟正常开局
-                                // this.onGameStart();
-                            }).catch((e) => {
-                                console.log(e);
-                                wx.showToast({
-                                    title: '重连失败，请重新开房间',
-                                    icon: 'none',
-                                    duration: 2000
+                                wx.showLoading({
+                                    title: '重连中...',
                                 });
-                            });
-                        } else {
-                            this.event.emit(Events.onGameEnd);
+
+                                this.server.reconnect({
+                                    accessInfo: res.data.accessInfo
+                                }).then((connectRes: any) => {
+                                    console.log('未结束的游戏断线重连结果', connectRes);
+                                    try {
+                                        wx.getStorage({
+                                            key: "selfClientId",
+                                            encrypt: true,
+                                            success(res) {
+                                                console.log('获取存储的selfClientId:', res.data)
+                                                databus.selfClientId = parseInt(res.data)
+                                            }
+                                        })
+                                        if (databus.selfClientId === 1) {
+                                            wx.getStorage({
+                                                key: "doorConfig",
+                                                encrypt: true,
+                                                success(res) {
+                                                    console.log('获取存储的doorConfig', JSON.parse(res.data))
+                                                    const doorConfigMsg = JSON.stringify({
+                                                        type: MsgTypeEnum.DOOR_CONFIG,
+                                                        data: JSON.parse(res.data)
+                                                    } as MsgData)
+                                                    this.server.broadcastInRoom({ msg: doorConfigMsg, toPosNumList: [] })
+                                                }
+                                            })
+                                        }
+
+                                    } catch (e) {
+
+                                    }
+                                    this.reconnectMaxFrameId = connectRes.maxFrameId || 0;
+                                    this.reconnecting = true;
+                                    wx.hideLoading()
+                                    // 手动调用onGameStart模拟正常开局
+                                    // this.onGameStart();
+                                }).catch((e) => {
+                                    console.log(e);
+                                    wx.showToast({
+                                        title: '重连失败，请重新开房间',
+                                        icon: 'none',
+                                        duration: 2000
+                                    });
+                                });
+                            } else {
+                                this.event.emit(Events.onGameEnd);
+                            }
                         }
-                    }
-                });
+                    });
+                }
+            }, fail: (res: WechatMinigame.GeneralCallbackResult) => {
+                console.error('重连失败', res.errMsg);
+
             }
         });
     }
@@ -507,9 +538,10 @@ export class GameServer {
     }
 
     /**
-     * 快速匹配
+     * 匹配对局
      */
     createMatchRoom() {
+        this.updateReadyStatus(true)
         let { avatarUrl, nickName } = databus.userInfo;
         console.log('开始匹配对局:', nickName);
 
@@ -559,8 +591,8 @@ export class GameServer {
      */
     startGame() {
         return this.server.startGame({
-            success: () => {
-                console.log('游戏启动成功');
+            success: (res: WechatMinigame.GeneralCallbackResult) => {
+                console.log('游戏启动成功', res.errMsg);
             }, fail: (res: WechatMinigame.GeneralCallbackResult) => {
                 console.log('游戏启动失败，' + res.errMsg);
             }
@@ -664,21 +696,6 @@ export class GameServer {
         });
 
         // databus.gameInstance.preditUpdate(this.frameInterval);
-    }
-
-    settle() {
-        databus.gameover = true;
-
-        if (databus.playerList[0].hp > databus.playerList[1].hp) {
-            databus.playerList[0].userData.win = true;
-        } else {
-
-            databus.playerList[1].userData.win = true;
-        }
-
-        this.gameResult = databus.playerList.map(player => {
-            return player.userData;
-        });
     }
 }
 let gameServer: GameServer = null

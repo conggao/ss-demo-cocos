@@ -13,6 +13,14 @@ export class UIStart extends Component {
         switch (sys.platform) {
             case sys.Platform.WECHAT_GAME:
                 this.isWxPlatform = true;
+                // const logManager = wx.getRealtimeLogManager()
+                // const logger = wx.getLogManager({ level: 1 });
+                // console.log = logger.log
+                // console.error = logManager.error
+                // wx.onError((error: WechatMinigame.Error) => {
+                //     console.log(error.message)
+                //     console.log(error.stack);
+                // })
                 break;
             case sys.Platform.BAIDU_MINI_GAME:
                 console.log('游戏运行在百度小游戏平台上');

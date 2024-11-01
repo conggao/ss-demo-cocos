@@ -1,5 +1,5 @@
 import { _decorator, Component, ProgressBar, Label, Button, director, resources, Game, log, assetManager, Prefab, instantiate, Node, EventHandler, sys, Vec2, Vec3 } from 'cc';
-import { gameServer } from '../managers/gameserver';
+import { FrameData, gameServer } from '../managers/gameserver';
 const { ccclass, property, requireComponent } = _decorator;
 import 'minigame-api-typings'
 import { DynamicResourceDefine } from '../resources/ResourceDefine';
@@ -13,6 +13,7 @@ import { UIJoyStick } from './UIJoyStick';
 import { VirtualInput } from '../input/VirtualInput';
 import { MsgData, MsgTypeEnum } from '../managers/Msg';
 import { genDoorConfig } from '../config/SceneConfig';
+import { isWxPlatform } from '../utils/Platform';
 /**
  * 游戏界面
  */
@@ -147,30 +148,52 @@ export class UIGame extends Component {
                 if (databus.selfClientId === selfClientId) {
                     console.log('自身玩家:', databus.selfClientId, nickName);
                     node.getComponent(PlayerController).isOwner = true
+                    node.getComponent(Actor).isOwner = true
                     // node.position = new Vec3(11.954, -328.759, 0);
                     // 绑定开门事件
                     const openDoorBtn = director.getScene().getChildByName("UIGame").getChildByName("GameLayout").getChildByName("openDoor")
                     const openDoorHandler = new EventHandler()
-                    openDoorHandler.target = node
-                    openDoorHandler.component = "Actor"
+                    openDoorHandler.target = this.node
+                    openDoorHandler.component = "UIGame"
                     openDoorHandler.handler = "uploadOpenDoorEvent"
-                    openDoorBtn.getComponent(Button).clickEvents[0] = openDoorHandler
+                    openDoorBtn.getComponent(Button).clickEvents.push(openDoorHandler)
                 }
                 this.node.addChild(node);
                 this.playerMap.set(selfClientId, node)
             })
         })
     }
+
+    uploadOpenDoorEvent() {
+        console.log('点击开门按钮');
+
+        const contactDoor = this.playerMap.get(databus.selfClientId).getComponent(Actor).contactDoor
+        if (contactDoor) {
+            if (isWxPlatform()) {
+                // 帧同步，开门事件
+                const msgStr = JSON.stringify({
+                    e: config.msg.OPEN_DOOR,
+                    n: databus.selfClientId,
+                    d: contactDoor.name
+                } as FrameData)
+                gameServer.server.uploadFrame({ actionList: [msgStr] })
+            }
+            this.playerMap.get(databus.selfClientId).getComponent(Actor).openDoor(databus.selfClientId, contactDoor.name)
+        }
+    }
+
     // 事件帧动画，开门结束触发，人物移动到目标门
     public onDoorOpen(clientId: number, doorName: string) {
         let actor: Actor = this.playerMap.get(clientId).getComponent('Actor') as Actor
         console.log('播放开门动画结束');
-        let descDoor = actor.contactDoor.getParent().getChildByName(databus.doorConfig[doorName])
-        if (descDoor) {
-            // 可能是规则配置问题
-            let descPosition = descDoor.getPosition()
-            this.playerMap.get(clientId).setPosition(descPosition)
-            actor.contactDoor = descDoor
+        if (actor.contactDoor) {
+            let descDoor = actor.contactDoor.getParent().getChildByName(databus.doorConfig[doorName])
+            if (descDoor) {
+                // 可能是规则配置问题
+                let descPosition = descDoor.getPosition()
+                this.playerMap.get(clientId).setPosition(descPosition)
+                actor.contactDoor = descDoor
+            }
         }
     }
 
