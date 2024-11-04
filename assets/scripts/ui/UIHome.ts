@@ -21,9 +21,7 @@ export class UIStart extends Component {
         })
         // 监听游戏结束事件
         EventTrans.instance.on(Events.onGameEnd, () => {
-            if (isWxPlatform()) {
-                gameServer.endGame()
-            }
+            SceneUtils.loadHome()
         })
         // 监听创建房间事件
         EventTrans.instance.on(Events.createRoom, () => {

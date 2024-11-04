@@ -34,11 +34,9 @@ export class UIStart extends Component {
         })
         // 监听游戏结束事件
         EventTrans.instance.on(Events.onGameEnd, () => {
-            if (this.isWxPlatform) {
-                gameServer.endGame()
-            }
+            SceneUtils.loadHome()
         })
-        SceneUtils.loadStart()
+        SceneUtils.loadHome()
     }
 
     update(deltaTime: number) {

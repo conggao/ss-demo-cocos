@@ -10,7 +10,7 @@ export class SceneUtils {
             }
         })
     }
-    static loadStart() {
+    static loadHome() {
         this.runScene("home")
     }
     static loadRoom() {

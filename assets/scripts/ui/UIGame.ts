@@ -239,9 +239,10 @@ export class UIGame extends Component {
     onExitGame() {
         resources.releaseAll()
         if (this.isWxPlatform) {
-            gameServer.endGame()
+            gameServer.ownerLeaveRoom(() => {
+                console.log('房主离开房间');
+            })
         }
-        director.loadScene("start")
     }
 
     onPauseGame() {

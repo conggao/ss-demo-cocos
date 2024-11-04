@@ -593,6 +593,7 @@ export class GameServer {
         return this.server.startGame({
             success: (res: WechatMinigame.GeneralCallbackResult) => {
                 console.log('游戏启动成功', res.errMsg);
+                this.onGameStart();
             }, fail: (res: WechatMinigame.GeneralCallbackResult) => {
                 console.log('游戏启动失败，' + res.errMsg);
             }

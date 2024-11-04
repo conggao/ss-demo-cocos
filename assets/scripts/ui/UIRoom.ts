@@ -12,6 +12,7 @@ const { ccclass, property } = _decorator;
 export class UIRoom extends Component {
     onRoomInfoChangeHandler
     start() {
+        director.preloadScene('game')
         // this.singin();
         // 游戏开始，跳转到游戏页面
         EventTrans.instance.on(Events.onGameStart, () => {
